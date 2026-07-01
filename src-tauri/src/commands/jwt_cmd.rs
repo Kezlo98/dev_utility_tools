@@ -26,7 +26,11 @@ pub async fn jwt_decode(token: String) -> Result<JwtParts, String> {
 
 /// Verify a token's signature, then return header + claims.
 #[tauri::command]
-pub async fn jwt_verify(token: String, secret: String, algorithm: String) -> Result<JwtParts, String> {
+pub async fn jwt_verify(
+    token: String,
+    secret: String,
+    algorithm: String,
+) -> Result<JwtParts, String> {
     verify_token(&token, &secret, &algorithm)
 }
 
@@ -55,8 +59,12 @@ pub fn verify_token(token: &str, secret: &str, algorithm: &str) -> Result<JwtPar
     let mut validation = Validation::new(requested);
     validation.validate_exp = false;
     validation.required_spec_claims.clear();
-    let data = decode::<Value>(token, &DecodingKey::from_secret(secret.as_bytes()), &validation)
-        .map_err(|e| format!("jwt verify failed: {e}"))?;
+    let data = decode::<Value>(
+        token,
+        &DecodingKey::from_secret(secret.as_bytes()),
+        &validation,
+    )
+    .map_err(|e| format!("jwt verify failed: {e}"))?;
     Ok(JwtParts {
         header,
         claims: data.claims,
@@ -101,7 +109,12 @@ mod tests {
     fn make_token(alg: Algorithm, secret: &str, claims: &Value) -> String {
         let mut header = Header::new(alg);
         header.typ = Some("JWT".to_string());
-        encode(&header, claims, &EncodingKey::from_secret(secret.as_bytes())).unwrap()
+        encode(
+            &header,
+            claims,
+            &EncodingKey::from_secret(secret.as_bytes()),
+        )
+        .unwrap()
     }
 
     #[test]

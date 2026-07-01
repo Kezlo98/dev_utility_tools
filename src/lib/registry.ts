@@ -1,6 +1,5 @@
 import type { Tool } from "./types";
 
-import { placeholderTools } from "@/tools/_placeholder";
 import { jsonTools } from "@/tools/format/json";
 import { yamlTools } from "@/tools/format/yaml";
 import { xmlTools } from "@/tools/format/xml";
@@ -22,10 +21,9 @@ import { crontabTools } from "@/tools/cron/crontab";
 
 /**
  * Tool registry. New tools are appended here once their category barrel is
- * imported. Phases 3–5 add Format/Encode, Generators/Text, and Rust-backed Crypto.
+ * imported. Format/Encode, Generators/Text, Rust-backed Crypto, and Cron.
  */
 const tools: Tool[] = [
-  ...placeholderTools,
   ...jsonTools,
   ...yamlTools,
   ...xmlTools,

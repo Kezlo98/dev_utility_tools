@@ -41,7 +41,9 @@ fn validate_cost(cost: u32) -> Result<u32, String> {
     if (MIN_COST..=MAX_COST).contains(&cost) {
         Ok(cost)
     } else {
-        Err(format!("cost must be between {MIN_COST} and {MAX_COST}, got {cost}"))
+        Err(format!(
+            "cost must be between {MIN_COST} and {MAX_COST}, got {cost}"
+        ))
     }
 }
 
