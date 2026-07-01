@@ -1,1 +1,42 @@
+# DevKit
+
+# Plans (kept local)
 plans/
+
+# Dependencies
+node_modules/
+
+# Build output
+dist/
+dist-ssr/
+*.local
+
+# tsc -b (project references) emits these regardless of noEmit
+*.tsbuildinfo
+vite.config.js
+vite.config.d.ts
+
+# Tauri / Rust
+src-tauri/target/
+src-tauri/gen/
+
+# Logs
+*.log
+npm-debug.log*
+yarn-debug.log*
+yarn-error.log*
+pnpm-debug.log*
+
+# Editor / OS
+.vscode/*
+!.vscode/extensions.json
+.idea/
+.DS_Store
+*.suo
+*.ntvs*
+*.njsproj
+*.sln
+*.sw?
+.env
+.env.*
+!.env.example
