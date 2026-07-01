@@ -47,7 +47,7 @@ Password generation and SHA-* hashing use the WebView's `crypto.subtle` (OS CSPR
 | 3 | [Tool Wave A - Format & Encode](./phase-03-tool-wave-a-format-encode.md) | Done | 2 |
 | 4 | [Tool Wave B - Generators & Text](./phase-04-tool-wave-b-generators-text.md) | Done | 2 |
 | 5 | [Tool Wave C - Rust-backed Crypto](./phase-05-tool-wave-c-rust-backed-crypto.md) | Done | 2 |
-| 6 | [Cron Tool](./phase-06-cron-tool.md) | Pending | 2 |
+| 6 | [Cron Tool](./phase-06-cron-tool.md) | Done | 2 |
 | 7 | [Polish & CI](./phase-07-polish-ci.md) | Pending | 3, 4, 5, 6 |
 
 Phases 3–6 can run in parallel after Phase 2 lands.

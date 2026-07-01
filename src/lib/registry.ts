@@ -17,6 +17,8 @@ import { passwordTools } from "@/tools/generators/password";
 import { caseTools } from "@/tools/text/case";
 import { diffTools } from "@/tools/text/diff";
 import { regexTools } from "@/tools/text/regex";
+import { cronExpressionTools } from "@/tools/cron/expression";
+import { crontabTools } from "@/tools/cron/crontab";
 
 /**
  * Tool registry. New tools are appended here once their category barrel is
@@ -40,6 +42,8 @@ const tools: Tool[] = [
   ...caseTools,
   ...diffTools,
   ...regexTools,
+  ...cronExpressionTools,
+  ...crontabTools,
 ];
 
 const byId = new Map<string, Tool>(tools.map((t) => [t.id, t]));
