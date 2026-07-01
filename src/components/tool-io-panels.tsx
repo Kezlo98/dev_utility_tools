@@ -1,9 +1,7 @@
-import { useState, type ReactNode } from "react";
-import { Check, Copy } from "lucide-react";
+import { type ReactNode } from "react";
 
-import { cn } from "@/lib/utils";
-import { copyText } from "@/lib/copy";
 import { Textarea } from "@/components/ui/textarea";
+import { CopyButton } from "@/components/copy-button";
 
 interface Props {
   /** Controlled input value (source text the user edits). */
@@ -79,33 +77,5 @@ function Pane({ label, action, children }: { label: string; action?: ReactNode; 
       </div>
       <div className="flex min-h-0 flex-1 flex-col">{children}</div>
     </div>
-  );
-}
-
-function CopyButton({ text, disabled }: { text: string; disabled: boolean }) {
-  const [copied, setCopied] = useState(false);
-
-  async function handleClick() {
-    const ok = await copyText(text);
-    if (ok) {
-      setCopied(true);
-      window.setTimeout(() => setCopied(false), 1500);
-    }
-  }
-
-  return (
-    <button
-      type="button"
-      onClick={handleClick}
-      disabled={disabled}
-      aria-label="Copy output"
-      title="Copy output"
-      className={cn(
-        "inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40",
-      )}
-    >
-      {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
-      {copied ? "Copied" : "Copy"}
-    </button>
   );
 }
