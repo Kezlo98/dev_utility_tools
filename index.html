@@ -1,9 +1,29 @@
 <!doctype html>
-<html lang="en" class="dark">
+<html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <title>DevKit</title>
+    <!--
+      Apply the persisted theme before first paint to avoid a flash of the
+      wrong scheme. Runs synchronously in <head>; mirrors src/lib/theme.ts.
+      Zustand persist stores state under "devkit:app-state".
+    -->
+    <script>
+      (function () {
+        try {
+          var raw = localStorage.getItem("devkit:app-state");
+          var mode = raw ? (JSON.parse(raw).state || {}).theme : "system";
+          var dark =
+            mode === "dark" ||
+            (mode !== "light" &&
+              window.matchMedia("(prefers-color-scheme: dark)").matches);
+          if (dark) document.documentElement.classList.add("dark");
+        } catch (_) {
+          /* fall back to light on any parse error */
+        }
+      })();
+    </script>
   </head>
   <body>
     <div id="root"></div>

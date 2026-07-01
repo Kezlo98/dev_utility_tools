@@ -1,10 +1,35 @@
+import { useState } from "react";
+
+import { MenuPanel } from "@/components/menu-panel";
+import { ToolPage } from "@/components/tool-page";
+import { CommandPalette } from "@/components/command-palette";
+import {
+  useGlobalShortcut,
+  isPaletteToggle,
+} from "@/hooks/use-global-shortcut";
+
+/**
+ * App frame: MenuPanel (left) + ToolPage (right) + a globally-mounted command
+ * palette. The palette lives at the root, outside any scrolling region, so its
+ * portal doesn't conflict inside the Tauri WebView.
+ */
 function App() {
+  const [paletteOpen, setPaletteOpen] = useState(false);
+
+  useGlobalShortcut((e) => {
+    if (isPaletteToggle(e)) {
+      e.preventDefault();
+      setPaletteOpen((o) => !o);
+    }
+  });
+
   return (
-    <div className="flex min-h-screen items-center justify-center bg-background text-foreground">
-      <div className="text-center">
-        <h1 className="text-4xl font-bold tracking-tight">DevKit</h1>
-        <p className="mt-2 text-muted-foreground">Developer utilities</p>
-      </div>
+    <div className="flex h-screen w-screen overflow-hidden bg-background text-foreground">
+      <MenuPanel />
+      <main className="min-w-0 flex-1">
+        <ToolPage />
+      </main>
+      <CommandPalette open={paletteOpen} onOpenChange={setPaletteOpen} />
     </div>
   );
 }
