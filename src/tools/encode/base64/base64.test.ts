@@ -13,13 +13,19 @@ describe("base64", () => {
 
   it("round-trips UTF-8 (multibyte) input", () => {
     const text = "héllo 世界 ✓";
-    const { output, error } = transformBase64(transformBase64(text, "encode").output, "decode");
+    const { output, error } = transformBase64(
+      transformBase64(text, "encode").output,
+      "decode",
+    );
     expect(error).toBeNull();
     expect(output).toBe(text);
   });
 
   it("returns a readable error for non-Base64 input on decode", () => {
-    const { output, error } = transformBase64("this is not!!! base64", "decode");
+    const { output, error } = transformBase64(
+      "this is not!!! base64",
+      "decode",
+    );
     expect(output).toBe("");
     expect(error).not.toBeNull();
   });

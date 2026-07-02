@@ -16,7 +16,10 @@ export function encodeBase64(input: string): string {
   return btoa(binary);
 }
 
-export function decodeBase64(input: string): { output: string; error: string | null } {
+export function decodeBase64(input: string): {
+  output: string;
+  error: string | null;
+} {
   const trimmed = input.replace(/\s+/g, "");
   if (!trimmed) return { output: "", error: null };
   // fatal: true so a non-UTF-8 byte sequence (e.g. a binary/image blob) is
@@ -42,6 +45,7 @@ export function transformBase64(
   direction: Direction,
 ): { output: string; error: string | null } {
   if (!input) return { output: "", error: null };
-  if (direction === "encode") return { output: encodeBase64(input), error: null };
+  if (direction === "encode")
+    return { output: encodeBase64(input), error: null };
   return decodeBase64(input);
 }

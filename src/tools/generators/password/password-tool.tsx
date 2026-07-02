@@ -4,7 +4,12 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { CopyButton } from "@/components/copy-button";
 import { cn } from "@/lib/utils";
-import { generatePassword, CHAR_CLASSES, PASSWORD_MIN, PASSWORD_MAX } from "./password";
+import {
+  generatePassword,
+  CHAR_CLASSES,
+  PASSWORD_MIN,
+  PASSWORD_MAX,
+} from "./password";
 
 type ClassKey = (typeof CHAR_CLASSES)[number]["key"];
 
@@ -45,13 +50,25 @@ export default function PasswordTool() {
         <Button
           size="sm"
           onClick={() =>
-            setOutput(generatePassword({ length, uppercase: enabled.uppercase, lowercase: enabled.lowercase, digits: enabled.digits, symbols: enabled.symbols }))
+            setOutput(
+              generatePassword({
+                length,
+                uppercase: enabled.uppercase,
+                lowercase: enabled.lowercase,
+                digits: enabled.digits,
+                symbols: enabled.symbols,
+              }),
+            )
           }
           disabled={noneEnabled}
         >
           Generate
         </Button>
-        {noneEnabled && <span className="text-xs text-destructive">Enable at least one class.</span>}
+        {noneEnabled && (
+          <span className="text-xs text-destructive">
+            Enable at least one class.
+          </span>
+        )}
       </div>
 
       <div className="flex items-center gap-3">

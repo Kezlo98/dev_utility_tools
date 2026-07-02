@@ -8,6 +8,8 @@ import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { MenuPanelItem } from "@/components/menu-panel-item";
+import { Logo } from "@/components/logo";
+import { cn, isMac } from "@/lib/utils";
 
 /**
  * Left column: sticky search, then a Favorites section (only when favorites
@@ -41,43 +43,54 @@ export function MenuPanel() {
   );
 
   return (
-    <aside className="flex w-64 shrink-0 flex-col border-r bg-card">
-      <div className="space-y-3 border-b p-3">
-        <Input
-          value={query}
-          onChange={(e) => setQuery(e.target.value)}
-          placeholder="Search tools…"
-          aria-label="Search tools"
-        />
-        <ThemeToggle />
+    <aside className="flex w-64 shrink-0 flex-col bg-background">
+      {isMac && <div className="h-9 w-full shrink-0" data-tauri-drag-region />}
+      <div className={cn("flex-1 min-h-0 p-3", isMac ? "pt-0" : "pt-3")}>
+        <div className="flex h-full flex-col rounded-xl border bg-card/50 shadow-sm overflow-hidden">
+          {/* Header inside the island */}
+          <div className="space-y-3 p-3 border-b bg-card/20">
+            <div className="flex items-center gap-2 px-1 py-0.5">
+              <Logo className="h-6 w-6 text-primary" />
+              <span className="text-base font-semibold tracking-tight">
+                DevKit
+              </span>
+            </div>
+            <Input
+              value={query}
+              onChange={(e) => setQuery(e.target.value)}
+              placeholder="Search tools…"
+              aria-label="Search tools"
+            />
+            <ThemeToggle />
+          </div>
+          {/* Tools list inside the same island */}
+          <ScrollArea className="flex-1">
+            <nav className="p-2">
+              {favSet.size > 0 && !query.trim() && (
+                <section className="mb-2">
+                  <p className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+                    ★ Favorites
+                  </p>
+                  {ordered.filter((t) => favSet.has(t.id)).map(renderRow)}
+                </section>
+              )}
+              <section>
+                <p className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
+                  All tools
+                </p>
+                {ordered
+                  .filter((t) => query.trim() || !favSet.has(t.id))
+                  .map(renderRow)}
+              </section>
+              {ordered.length === 0 && (
+                <p className="px-2 py-4 text-sm text-muted-foreground">
+                  No tools match “{query}”.
+                </p>
+              )}
+            </nav>
+          </ScrollArea>
+        </div>
       </div>
-      <ScrollArea className="flex-1">
-        <nav className="p-2">
-          {favSet.size > 0 && !query.trim() && (
-            <section className="mb-2">
-              <p className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
-                ★ Favorites
-              </p>
-              {ordered
-                .filter((t) => favSet.has(t.id))
-                .map(renderRow)}
-            </section>
-          )}
-          <section>
-            <p className="px-2 py-1.5 text-xs font-medium text-muted-foreground">
-              All tools
-            </p>
-            {ordered
-              .filter((t) => query.trim() || !favSet.has(t.id))
-              .map(renderRow)}
-          </section>
-          {ordered.length === 0 && (
-            <p className="px-2 py-4 text-sm text-muted-foreground">
-              No tools match “{query}”.
-            </p>
-          )}
-        </nav>
-      </ScrollArea>
     </aside>
   );
 }

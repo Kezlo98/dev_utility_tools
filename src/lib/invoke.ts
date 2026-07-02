@@ -33,6 +33,10 @@ export type JwtAlgorithm = "HS256" | "HS384" | "HS512";
 export const JWT_ALGORITHMS: JwtAlgorithm[] = ["HS256", "HS384", "HS512"];
 
 /** Verify a token's signature with `secret` under `algorithm`. */
-export function jwtVerify(token: string, secret: string, algorithm: JwtAlgorithm): Promise<JwtParts> {
+export function jwtVerify(
+  token: string,
+  secret: string,
+  algorithm: JwtAlgorithm,
+): Promise<JwtParts> {
   return invoke<JwtParts>("jwt_verify", { token, secret, algorithm });
 }

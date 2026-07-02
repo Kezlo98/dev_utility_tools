@@ -26,10 +26,16 @@ export default function CronExpressionTool() {
   const [tz, setTz] = useState(systemTimezone());
 
   const zones = useMemo(() => listTimezones(), []);
-  const normalized = useMemo(() => normalizeExpression(expr, mode), [expr, mode]);
+  const normalized = useMemo(
+    () => normalizeExpression(expr, mode),
+    [expr, mode],
+  );
   const target = normalized.fiveField;
   const valid = !!target && isValidCron(target);
-  const description = useMemo(() => (valid ? describe(target) : ""), [target, valid]);
+  const description = useMemo(
+    () => (valid ? describe(target) : ""),
+    [target, valid],
+  );
   const runs = useMemo(
     () => (valid ? nextRuns(target, 10, tz) : []),
     [target, valid, tz],
@@ -79,11 +85,14 @@ export default function CronExpressionTool() {
 
       {normalized.error ? (
         <p role="alert" className="text-sm text-destructive">
-          {normalized.error} <span className="text-muted-foreground">{CRON_SYNTAX_NOTE}</span>
+          {normalized.error}{" "}
+          <span className="text-muted-foreground">{CRON_SYNTAX_NOTE}</span>
         </p>
       ) : !valid ? (
         <p role="alert" className="text-sm text-destructive">
-          {empty ? "Enter a cron expression to begin." : "Invalid cron expression."}{" "}
+          {empty
+            ? "Enter a cron expression to begin."
+            : "Invalid cron expression."}{" "}
           <span className="text-muted-foreground">{CRON_SYNTAX_NOTE}</span>
         </p>
       ) : (
@@ -95,8 +104,8 @@ export default function CronExpressionTool() {
             <p className="mt-1 text-sm">{description}</p>
             {normalized.seconds && (
               <p className="mt-1 text-xs text-muted-foreground">
-                Seconds field "{normalized.seconds}" applies to the description; run preview is
-                scheduled at minute granularity.
+                Seconds field "{normalized.seconds}" applies to the description;
+                run preview is scheduled at minute granularity.
               </p>
             )}
           </div>

@@ -3,7 +3,8 @@
  * heuristic that splits on `_`, `-`, whitespace, and camel/Pascal humps, then
  * re-emitted as six common variants.
  */
-export type CaseKind = "camel" | "pascal" | "snake" | "kebab" | "constant" | "title";
+export type CaseKind =
+  "camel" | "pascal" | "snake" | "kebab" | "constant" | "title";
 
 /** Split an arbitrary string into lowercased word tokens. */
 export function tokenize(input: string): string[] {
@@ -19,7 +20,8 @@ export function tokenize(input: string): string[] {
     .filter(Boolean);
 }
 
-const cap = (word: string) => (word ? word.charAt(0).toUpperCase() + word.slice(1) : word);
+const cap = (word: string) =>
+  word ? word.charAt(0).toUpperCase() + word.slice(1) : word;
 
 /** Convert a token array into a given case variant. */
 export function toCase(tokens: string[], kind: CaseKind): string {

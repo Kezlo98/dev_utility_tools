@@ -3,11 +3,7 @@ import type { LucideIcon } from "lucide-react";
 
 /** Tool categories drive MenuPanel grouping and registry barrels. */
 export type ToolCategory =
-  | "format-validate"
-  | "encode-hash-crypto"
-  | "generators"
-  | "text-dev"
-  | "cron";
+  "format-validate" | "encode-hash-crypto" | "generators" | "text-dev" | "cron";
 
 /**
  * A single developer utility tool. Each tool plugs into ToolPageShell and the

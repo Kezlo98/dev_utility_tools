@@ -90,11 +90,17 @@ export function CommandPalette({ open, onOpenChange }: Props) {
         </CommandGroup>
       </CommandList>
       <div className="flex items-center justify-center gap-3 border-t px-3 py-2 text-[11px] text-muted-foreground">
-        <span><kbd className="font-sans">↑↓</kbd> navigate</span>
+        <span>
+          <kbd className="font-sans">↑↓</kbd> navigate
+        </span>
         <span aria-hidden>•</span>
-        <span><kbd className="font-sans">↵</kbd> select</span>
+        <span>
+          <kbd className="font-sans">↵</kbd> select
+        </span>
         <span aria-hidden>•</span>
-        <span><kbd className="font-sans">esc</kbd> close</span>
+        <span>
+          <kbd className="font-sans">esc</kbd> close
+        </span>
       </div>
     </CommandDialog>
   );

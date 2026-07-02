@@ -25,10 +25,13 @@ export class ToolErrorBoundary extends Component<Props, State> {
   }
 
   componentDidCatch(error: Error, info: ErrorInfo) {
-    console.error(`[DevKit] tool "${this.props.toolName ?? "unknown"}" crashed`, {
-      error,
-      info,
-    });
+    console.error(
+      `[DevKit] tool "${this.props.toolName ?? "unknown"}" crashed`,
+      {
+        error,
+        info,
+      },
+    );
   }
 
   private reset = () => this.setState({ error: null });

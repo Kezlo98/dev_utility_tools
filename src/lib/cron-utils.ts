@@ -37,9 +37,11 @@ export const FALLBACK_TIMEZONES = [
 export function listTimezones(): string[] {
   try {
     // supportedValuesOf is missing on very old engines; guard accordingly.
-    const zones = (Intl as unknown as {
-      supportedValuesOf?: (key: string) => string[];
-    }).supportedValuesOf?.("timeZone");
+    const zones = (
+      Intl as unknown as {
+        supportedValuesOf?: (key: string) => string[];
+      }
+    ).supportedValuesOf?.("timeZone");
     if (zones && zones.length > 0) return zones;
   } catch {
     // fall through to curated list
@@ -97,13 +99,17 @@ export interface NormalizedExpr {
  * field — cron-parser v4 schedules at minute granularity, so seconds are
  * surfaced separately and never silently misparsed as a minute value.
  */
-export function normalizeExpression(input: string, mode: CronFieldMode): NormalizedExpr {
+export function normalizeExpression(
+  input: string,
+  mode: CronFieldMode,
+): NormalizedExpr {
   const tokens = input.trim().split(/\s+/).filter(Boolean);
   if (mode === "6") {
     if (tokens.length !== 6) {
       return {
         fiveField: "",
-        error: "6-field mode needs exactly 6 fields: seconds minute hour day month weekday.",
+        error:
+          "6-field mode needs exactly 6 fields: seconds minute hour day month weekday.",
       };
     }
     return { fiveField: tokens.slice(1).join(" "), seconds: tokens[0] };

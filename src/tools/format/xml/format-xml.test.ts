@@ -4,7 +4,7 @@ import { formatXml } from "./format-xml";
 
 describe("formatXml", () => {
   it("pretty-prints compact XML with a 2-space indent", () => {
-    const { output, error } = formatXml('<root><item>hi</item></root>');
+    const { output, error } = formatXml("<root><item>hi</item></root>");
     expect(error).toBeNull();
     expect(output).toContain("<root>");
     expect(output).toContain("  <item>hi</item>");

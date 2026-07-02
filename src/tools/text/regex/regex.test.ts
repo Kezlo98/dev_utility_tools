@@ -1,6 +1,11 @@
 import { describe, it, expect } from "vitest";
 
-import { runRegex, buildSegments, MAX_PATTERN_LEN, MAX_TEST_LEN } from "./regex";
+import {
+  runRegex,
+  buildSegments,
+  MAX_PATTERN_LEN,
+  MAX_TEST_LEN,
+} from "./regex";
 
 describe("runRegex", () => {
   it("finds all global matches", () => {
@@ -48,7 +53,11 @@ describe("buildSegments", () => {
     const { matches } = runRegex("\\d+", "g", test);
     const segments = buildSegments(test, matches);
     expect(segments.map((s) => s.text).join("")).toBe(test);
-    expect(segments.filter((s) => s.matched).map((s) => s.text)).toEqual(["1", "22", "333"]);
+    expect(segments.filter((s) => s.matched).map((s) => s.text)).toEqual([
+      "1",
+      "22",
+      "333",
+    ]);
   });
 
   it("round-trips exactly for zero-width matches (no dropped chars)", () => {

@@ -1,0 +1,6 @@
+<svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 512 512" fill="none">
+  <!-- Diagonal slash, perfectly proportioned and centered -->
+  <polygon points="284,160 256,160 168,348 196,348" fill="currentColor" />
+  <!-- Terminal cursor block (square) aligned dynamically with the slash -->
+  <rect x="276" y="280" width="68" height="68" fill="currentColor" />
+</svg>

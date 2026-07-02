@@ -66,10 +66,18 @@ export default function BcryptTool() {
 
   return (
     <div className="flex flex-col gap-4">
-      <ModeToggle mode={mode} onModeChange={(m) => { setMode(m); reset(); }} />
+      <ModeToggle
+        mode={mode}
+        onModeChange={(m) => {
+          setMode(m);
+          reset();
+        }}
+      />
 
       <label className="flex flex-col gap-1.5">
-        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Password</span>
+        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+          Password
+        </span>
         <Input
           value={password}
           onChange={(e) => setPassword(e.target.value)}
@@ -103,7 +111,9 @@ export default function BcryptTool() {
         </div>
       ) : (
         <label className="flex flex-col gap-1.5">
-          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">Hash</span>
+          <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+            Hash
+          </span>
           <Textarea
             value={hashValue}
             onChange={(e) => setHashValue(e.target.value)}
@@ -115,7 +125,11 @@ export default function BcryptTool() {
       )}
 
       <div className="flex items-center gap-3">
-        <Button size="sm" onClick={mode === "hash" ? onHash : onVerify} disabled={busy || !password || (mode === "verify" && !hashValue)}>
+        <Button
+          size="sm"
+          onClick={mode === "hash" ? onHash : onVerify}
+          disabled={busy || !password || (mode === "verify" && !hashValue)}
+        >
           {busy ? <Loader2 className="mr-2 h-4 w-4 animate-spin" /> : null}
           {mode === "hash" ? "Hash" : "Verify"}
         </Button>
@@ -123,12 +137,20 @@ export default function BcryptTool() {
       </div>
 
       {error ? (
-        <p role="alert" className="rounded-md border border-destructive/40 bg-destructive/5 p-3 font-mono text-sm text-destructive">
+        <p
+          role="alert"
+          className="rounded-md border border-destructive/40 bg-destructive/5 p-3 font-mono text-sm text-destructive"
+        >
           {error}
         </p>
       ) : output ? (
         mode === "hash" ? (
-          <Input readOnly value={output} spellCheck={false} className="font-mono text-sm" />
+          <Input
+            readOnly
+            value={output}
+            spellCheck={false}
+            className="font-mono text-sm"
+          />
         ) : (
           <p className="font-mono text-sm">{output}</p>
         )
@@ -137,7 +159,13 @@ export default function BcryptTool() {
   );
 }
 
-function ModeToggle({ mode, onModeChange }: { mode: Mode; onModeChange: (m: Mode) => void }) {
+function ModeToggle({
+  mode,
+  onModeChange,
+}: {
+  mode: Mode;
+  onModeChange: (m: Mode) => void;
+}) {
   const options: { value: Mode; label: string }[] = [
     { value: "hash", label: "Hash" },
     { value: "verify", label: "Verify" },
@@ -152,7 +180,9 @@ function ModeToggle({ mode, onModeChange }: { mode: Mode; onModeChange: (m: Mode
           aria-pressed={mode === o.value}
           className={cn(
             "rounded px-3 py-1 text-xs font-medium transition-colors",
-            mode === o.value ? "bg-primary text-primary-foreground" : "text-muted-foreground hover:text-foreground",
+            mode === o.value
+              ? "bg-primary text-primary-foreground"
+              : "text-muted-foreground hover:text-foreground",
           )}
         >
           {o.label}

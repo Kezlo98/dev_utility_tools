@@ -20,12 +20,22 @@ export interface RegexResult {
  * global patterns from looping forever. Invalid patterns return a readable
  * error instead of throwing.
  */
-export function runRegex(pattern: string, flags: string, test: string): RegexResult {
+export function runRegex(
+  pattern: string,
+  flags: string,
+  test: string,
+): RegexResult {
   if (pattern.length > MAX_PATTERN_LEN) {
-    return { matches: [], error: `Pattern exceeds the ${MAX_PATTERN_LEN}-character limit.` };
+    return {
+      matches: [],
+      error: `Pattern exceeds the ${MAX_PATTERN_LEN}-character limit.`,
+    };
   }
   if (test.length > MAX_TEST_LEN) {
-    return { matches: [], error: `Test string exceeds the ${MAX_TEST_LEN / 1024} KB limit.` };
+    return {
+      matches: [],
+      error: `Test string exceeds the ${MAX_TEST_LEN / 1024} KB limit.`,
+    };
   }
   if (!pattern) return { matches: [], error: null };
 
@@ -72,10 +82,12 @@ export function buildSegments(
   for (const m of matches) {
     if (m.match.length === 0) continue; // zero-width: nothing to highlight
     if (m.index < cursor) continue; // overlap guard
-    if (m.index > cursor) segments.push({ text: test.slice(cursor, m.index), matched: false });
+    if (m.index > cursor)
+      segments.push({ text: test.slice(cursor, m.index), matched: false });
     segments.push({ text: m.match, matched: true });
     cursor = m.index + m.match.length;
   }
-  if (cursor < test.length) segments.push({ text: test.slice(cursor), matched: false });
+  if (cursor < test.length)
+    segments.push({ text: test.slice(cursor), matched: false });
   return segments;
 }

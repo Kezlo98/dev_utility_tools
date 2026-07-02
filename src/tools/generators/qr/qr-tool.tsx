@@ -51,9 +51,15 @@ export default function QrTool() {
               {error}
             </p>
           ) : dataUrl ? (
-            <img src={dataUrl} alt="Generated QR code" className="max-h-full max-w-full" />
+            <img
+              src={dataUrl}
+              alt="Generated QR code"
+              className="max-h-full max-w-full"
+            />
           ) : (
-            <p className="text-sm text-muted-foreground">QR preview appears here…</p>
+            <p className="text-sm text-muted-foreground">
+              QR preview appears here…
+            </p>
           )}
         </div>
       </div>

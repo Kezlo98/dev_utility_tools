@@ -11,6 +11,14 @@ export const caseTools: Tool[] = [
     icon: CaseSensitive,
     category: "text-dev",
     component: CaseTool,
-    keywords: ["case", "camel", "pascal", "snake", "kebab", "constant", "title"],
+    keywords: [
+      "case",
+      "camel",
+      "pascal",
+      "snake",
+      "kebab",
+      "constant",
+      "title",
+    ],
   },
 ];

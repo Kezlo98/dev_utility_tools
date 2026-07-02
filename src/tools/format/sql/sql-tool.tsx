@@ -1,14 +1,22 @@
 import { useMemo, useState } from "react";
 
 import { ToolIoPanels } from "@/components/tool-io-panels";
-import { formatSql, SQL_LANGUAGES, SQL_LANGUAGE_LABELS, type SqlLanguage } from "./format-sql";
+import {
+  formatSql,
+  SQL_LANGUAGES,
+  SQL_LANGUAGE_LABELS,
+  type SqlLanguage,
+} from "./format-sql";
 
 /** SQL pretty-printer with a dialect selector. */
 export default function SqlTool() {
   const [input, setInput] = useState("");
   const [language, setLanguage] = useState<SqlLanguage>("sql");
 
-  const { output, error } = useMemo(() => formatSql(input, language), [input, language]);
+  const { output, error } = useMemo(
+    () => formatSql(input, language),
+    [input, language],
+  );
 
   return (
     <ToolIoPanels

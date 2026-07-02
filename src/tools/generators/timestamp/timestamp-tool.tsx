@@ -11,8 +11,14 @@ export default function TimestampTool() {
   const view = useMemo(() => toTimestamp(input), [input]);
 
   const rows = [
-    { label: "Unix (seconds)", value: view.unixSeconds ? String(view.unixSeconds) : "" },
-    { label: "Unix (ms)", value: view.unixMillis ? String(view.unixMillis) : "" },
+    {
+      label: "Unix (seconds)",
+      value: view.unixSeconds ? String(view.unixSeconds) : "",
+    },
+    {
+      label: "Unix (ms)",
+      value: view.unixMillis ? String(view.unixMillis) : "",
+    },
     { label: "UTC (ISO 8601)", value: view.isoUtc },
     { label: "Local time", value: view.isoLocal },
     { label: "Weekday", value: view.weekday },
@@ -28,10 +34,18 @@ export default function TimestampTool() {
           spellCheck={false}
           className="font-mono text-sm"
         />
-        <Button variant="outline" size="sm" onClick={() => setInput(String(Date.now()))}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setInput(String(Date.now()))}
+        >
           Now (ms)
         </Button>
-        <Button variant="outline" size="sm" onClick={() => setInput(String(Math.floor(Date.now() / 1000)))}>
+        <Button
+          variant="outline"
+          size="sm"
+          onClick={() => setInput(String(Math.floor(Date.now() / 1000)))}
+        >
           Now (s)
         </Button>
       </div>
@@ -50,7 +64,9 @@ export default function TimestampTool() {
               <span className="w-32 shrink-0 text-xs font-medium uppercase tracking-wide text-muted-foreground">
                 {row.label}
               </span>
-              <code className="flex-1 truncate font-mono text-sm">{row.value || "—"}</code>
+              <code className="flex-1 truncate font-mono text-sm">
+                {row.value || "—"}
+              </code>
               {row.value && <CopyButton text={row.value} compact />}
             </div>
           ))}
