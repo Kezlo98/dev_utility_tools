@@ -25,9 +25,12 @@ export function ThemeToggle() {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
-        <Button variant="outline" className="w-full justify-start gap-2">
-          <Active className="h-4 w-4" />
-          <span className="capitalize">{theme}</span>
+        <Button
+          variant="outline"
+          className="w-full justify-start gap-2.5 bg-background/30 border-border/50 hover:bg-accent/80 transition-all duration-300 rounded-lg shadow-sm"
+        >
+          <Active className="h-4 w-4 text-muted-foreground" />
+          <span className="capitalize font-sans text-sm">{theme}</span>
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="start" className="w-56">

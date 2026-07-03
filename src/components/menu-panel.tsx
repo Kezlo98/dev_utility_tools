@@ -43,27 +43,31 @@ export function MenuPanel() {
   );
 
   return (
-    <aside className="flex w-64 shrink-0 flex-col bg-background">
+    <aside className="flex w-64 shrink-0 flex-col bg-transparent">
       {isMac && <div className="h-9 w-full shrink-0" data-tauri-drag-region />}
-      <div className={cn("flex-1 min-h-0 p-3", isMac ? "pt-0" : "pt-3")}>
-        <div className="flex h-full flex-col rounded-xl border bg-card/50 shadow-sm overflow-hidden">
-          {/* Header inside the island */}
-          <div className="space-y-3 p-3 border-b bg-card/20">
-            <div className="flex items-center gap-2 px-1 py-0.5">
-              <Logo className="h-6 w-6 text-primary" />
-              <span className="text-base font-semibold tracking-tight">
-                DevKit
-              </span>
+      <div className={cn("flex-1 min-h-0 p-3.5", isMac ? "pt-0" : "pt-3.5")}>
+        {/* Outer Bezel */}
+        <div className="h-full rounded-[1.5rem] bg-black/[0.015] dark:bg-white/[0.02] p-1.5 ring-1 ring-black/[0.04] dark:ring-white/[0.08]">
+          {/* Inner Core */}
+          <div className="flex h-full flex-col rounded-[calc(1.5rem-0.375rem)] glass-panel overflow-hidden">
+            {/* Header inside the island */}
+            <div className="space-y-3.5 p-3.5 border-b bg-card/10 backdrop-blur-md">
+              <div className="flex items-center gap-2 px-1 py-0.5">
+                <Logo className="h-6 w-6 text-foreground" />
+                <span className="text-lg font-bold font-display tracking-tight text-foreground/90">
+                  DevKit
+                </span>
+              </div>
+              <Input
+                value={query}
+                onChange={(e) => setQuery(e.target.value)}
+                placeholder="Search tools…"
+                aria-label="Search tools"
+                className="bg-background/30 border-border/50 placeholder:text-muted-foreground/70 focus-visible:ring-1 focus-visible:ring-primary/40 focus-visible:ring-offset-0 focus-visible:border-primary/50 transition-all duration-300 rounded-lg"
+              />
+              <ThemeToggle />
             </div>
-            <Input
-              value={query}
-              onChange={(e) => setQuery(e.target.value)}
-              placeholder="Search tools…"
-              aria-label="Search tools"
-            />
-            <ThemeToggle />
-          </div>
-          {/* Tools list inside the same island */}
+            {/* Tools list inside the same island */}
           <ScrollArea className="flex-1">
             <nav className="p-2">
               {favSet.size > 0 && !query.trim() && (
@@ -89,6 +93,7 @@ export function MenuPanel() {
               )}
             </nav>
           </ScrollArea>
+          </div>
         </div>
       </div>
     </aside>

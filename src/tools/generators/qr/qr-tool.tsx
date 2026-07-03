@@ -24,38 +24,40 @@ export default function QrTool() {
   }
 
   return (
-    <div className="flex h-full flex-col gap-3">
-      <div className="flex items-center gap-2">
-        <Button size="sm" onClick={handleGenerate} disabled={busy}>
+    <div className="flex h-full flex-col gap-4">
+      <div className="flex items-center gap-3">
+        <Button size="sm" onClick={handleGenerate} disabled={busy} className="h-10 px-5 rounded-lg shadow-sm">
           {busy ? "Generating…" : "Generate"}
         </Button>
         {dataUrl && (
           <a href={dataUrl} download="devkit-qr.png">
-            <Button variant="outline" size="sm">
-              <Download /> Download PNG
+            <Button variant="outline" size="sm" className="bg-background/30 border-border/50 hover:bg-accent/80 shrink-0 h-10 px-4">
+              <Download className="mr-2" /> Download PNG
             </Button>
           </a>
         )}
       </div>
-      <div className="grid min-h-0 flex-1 grid-cols-1 gap-3 md:grid-cols-2">
+      <div className="grid min-h-0 flex-1 grid-cols-1 gap-4 md:grid-cols-2">
         <Textarea
           value={input}
           onChange={(e) => setInput(e.target.value)}
           placeholder="Text or URL to encode…"
           spellCheck={false}
-          className="min-h-[40vh] flex-1 resize-none font-mono text-sm"
+          className="min-h-[40vh] flex-1 resize-none font-mono text-sm rounded-xl border-border/50 bg-background/20 backdrop-blur-[2px] p-4 resize-none leading-relaxed focus-visible:ring-1 focus-visible:ring-primary/30 focus-visible:ring-offset-0 focus-visible:border-primary/40"
         />
-        <div className="flex min-h-[40vh] flex-1 items-center justify-center rounded-md border border-input bg-muted/30 p-4">
+        <div className="flex min-h-[40vh] flex-1 items-center justify-center rounded-xl border border-border/50 bg-background/20 backdrop-blur-[2px] p-6 shadow-inner">
           {error ? (
             <p role="alert" className="text-center text-sm text-destructive">
               {error}
             </p>
           ) : dataUrl ? (
-            <img
-              src={dataUrl}
-              alt="Generated QR code"
-              className="max-h-full max-w-full"
-            />
+            <div className="p-4 bg-white rounded-lg shadow-md border border-border/20">
+              <img
+                src={dataUrl}
+                alt="Generated QR code"
+                className="max-h-full max-w-full rounded-sm"
+              />
+            </div>
           ) : (
             <p className="text-sm text-muted-foreground">
               QR preview appears here…

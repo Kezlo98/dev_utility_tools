@@ -35,13 +35,13 @@ export default function PasswordTool() {
 
   return (
     <div className="flex flex-col gap-4">
-      <div className="flex items-center gap-2">
+      <div className="flex items-center gap-3">
         <Input
           readOnly
           value={output}
           placeholder="Click Generate…"
           spellCheck={false}
-          className="font-mono text-base"
+          className="font-mono text-base bg-background/30 border-border/50 placeholder:text-muted-foreground/60 focus-visible:ring-0 focus-visible:border-border/50 transition-all duration-300 rounded-lg h-11 px-4 tracking-wide font-semibold select-all"
         />
         {output && <CopyButton text={output} />}
       </div>
@@ -60,26 +60,27 @@ export default function PasswordTool() {
               }),
             )
           }
+          className="h-10 px-5 rounded-lg shadow-sm"
           disabled={noneEnabled}
         >
           Generate
         </Button>
         {noneEnabled && (
-          <span className="text-xs text-destructive">
-            Enable at least one class.
+          <span className="text-xs font-medium text-destructive">
+            Enable at least one character class.
           </span>
         )}
       </div>
 
-      <div className="flex items-center gap-3">
-        <label className="w-20 text-xs text-muted-foreground">Length</label>
+      <div className="flex items-center gap-4 bg-muted/20 px-4 py-3 rounded-xl border border-border/40 backdrop-blur-sm">
+        <label className="w-20 text-xs font-bold font-display uppercase tracking-widest text-muted-foreground/80">Length</label>
         <input
           type="range"
           min={PASSWORD_MIN}
           max={PASSWORD_MAX}
           value={length}
           onChange={(e) => setLength(Number(e.target.value))}
-          className="flex-1"
+          className="flex-1 accent-primary h-1 rounded-lg cursor-pointer bg-border/80"
         />
         <Input
           type="number"
@@ -87,7 +88,7 @@ export default function PasswordTool() {
           max={PASSWORD_MAX}
           value={length}
           onChange={(e) => setLength(Number(e.target.value))}
-          className="h-8 w-20"
+          className="h-9 w-20 bg-background/30 border-border/50 text-center font-mono rounded-lg"
         />
       </div>
 
@@ -99,10 +100,10 @@ export default function PasswordTool() {
             onClick={() => toggle(c.key)}
             aria-pressed={enabled[c.key]}
             className={cn(
-              "rounded-md border px-3 py-1 text-xs font-medium transition-colors",
+              "rounded-lg border px-4 py-2 text-xs font-semibold font-sans transition-colors duration-150 shadow-sm",
               enabled[c.key]
                 ? "border-primary bg-primary text-primary-foreground"
-                : "border-input text-muted-foreground hover:text-foreground",
+                : "border-border/50 bg-background/30 text-muted-foreground hover:text-foreground hover:bg-accent/40",
             )}
           >
             {c.label}

@@ -93,7 +93,7 @@ export default function CrontabTool() {
                     className="max-w-xs truncate px-3 py-2 font-mono"
                     title={r.command}
                   >
-                    {r.command || "—"}
+                    {r.command || "-"}
                   </td>
                   <td className="px-3 py-2">
                     {r.valid ? (
@@ -105,7 +105,7 @@ export default function CrontabTool() {
                     )}
                   </td>
                   <td className="px-3 py-2 font-mono text-muted-foreground">
-                    {r.next ?? "—"}
+                    {r.next ?? "-"}
                   </td>
                 </tr>
               ))}
