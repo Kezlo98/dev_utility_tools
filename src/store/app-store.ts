@@ -52,10 +52,10 @@ export const useAppStore = create<AppState>()(
 
       recordRecent: (id) =>
         set((s) => ({
-          paletteRecents: [id, ...s.paletteRecents.filter((r) => r !== id)].slice(
-            0,
-            MAX_RECENTS,
-          ),
+          paletteRecents: [
+            id,
+            ...s.paletteRecents.filter((r) => r !== id),
+          ].slice(0, MAX_RECENTS),
         })),
     }),
     {

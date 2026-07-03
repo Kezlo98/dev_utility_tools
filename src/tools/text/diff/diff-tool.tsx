@@ -54,7 +54,9 @@ export default function DiffTool() {
             {error}
           </p>
         ) : parts.length === 0 ? (
-          <p className="p-3 text-sm text-muted-foreground">Diff appears here…</p>
+          <p className="p-3 text-sm text-muted-foreground">
+            Diff appears here…
+          </p>
         ) : (
           <pre className="font-mono text-sm">
             {parts.map((part, i) => (
@@ -62,8 +64,10 @@ export default function DiffTool() {
                 key={i}
                 className={cn(
                   "whitespace-pre-wrap px-3 py-0.5",
-                  part.added && "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
-                  part.removed && "bg-rose-500/15 text-rose-700 dark:text-rose-300",
+                  part.added &&
+                    "bg-emerald-500/15 text-emerald-700 dark:text-emerald-300",
+                  part.removed &&
+                    "bg-rose-500/15 text-rose-700 dark:text-rose-300",
                 )}
               >
                 {part.value}

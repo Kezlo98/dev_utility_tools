@@ -1,7 +1,13 @@
 import { format } from "sql-formatter";
 
 /** SQL dialects exposed by the language dropdown. */
-export const SQL_LANGUAGES = ["sql", "postgresql", "mysql", "sqlite", "tsql"] as const;
+export const SQL_LANGUAGES = [
+  "sql",
+  "postgresql",
+  "mysql",
+  "sqlite",
+  "tsql",
+] as const;
 export type SqlLanguage = (typeof SQL_LANGUAGES)[number];
 
 export const SQL_LANGUAGE_LABELS: Record<SqlLanguage, string> = {

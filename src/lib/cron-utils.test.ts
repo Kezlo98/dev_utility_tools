@@ -45,9 +45,9 @@ describe("cron-utils.nextRuns", () => {
     const from = new Date("2026-07-01T00:00:00Z");
     const runs = nextRuns("*/15 * * * *", 4, "UTC", from);
     // cron-parser's first .next() is strictly after currentDate (00:15).
-    const gaps = runs.map((r) => r.millis).map((m, i, arr) =>
-      i === 0 ? m - from.getTime() : m - arr[i - 1],
-    );
+    const gaps = runs
+      .map((r) => r.millis)
+      .map((m, i, arr) => (i === 0 ? m - from.getTime() : m - arr[i - 1]));
     expect(gaps).toEqual([15, 15, 15, 15].map((m) => m * 60 * 1000));
   });
 

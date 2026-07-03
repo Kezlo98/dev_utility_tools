@@ -48,7 +48,9 @@ export function DirectionToggle({
         className="h-8 w-8"
         aria-label="Swap direction"
         title="Swap direction"
-        onClick={() => onDirectionChange(direction === "encode" ? "decode" : "encode")}
+        onClick={() =>
+          onDirectionChange(direction === "encode" ? "decode" : "encode")
+        }
       >
         <ArrowLeftRight />
       </Button>

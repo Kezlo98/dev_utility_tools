@@ -25,7 +25,10 @@ export const CHAR_CLASSES = [
 ] as const;
 
 function clampLength(length: number): number {
-  return Math.max(PASSWORD_MIN, Math.min(PASSWORD_MAX, Math.trunc(length) || PASSWORD_MIN));
+  return Math.max(
+    PASSWORD_MIN,
+    Math.min(PASSWORD_MAX, Math.trunc(length) || PASSWORD_MIN),
+  );
 }
 
 /**
@@ -43,7 +46,9 @@ export function generatePassword(opts: PasswordOptions): string {
   const charset = classes.map((c) => c.charset).join("");
 
   // One unbiased char from every enabled class guarantees class coverage.
-  const required = classes.map((c) => c.charset[secureRandomInt(c.charset.length)]).join("");
+  const required = classes
+    .map((c) => c.charset[secureRandomInt(c.charset.length)])
+    .join("");
   const remaining = pickN(charset, Math.max(0, length - required.length));
   return shuffleString(required + remaining);
 }

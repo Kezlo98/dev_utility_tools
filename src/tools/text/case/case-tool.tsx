@@ -36,8 +36,12 @@ export default function CaseTool() {
             key={key}
             className="flex items-center justify-between gap-3 border-b border-border px-3 py-2 last:border-b-0 odd:bg-muted/30"
           >
-            <span className="w-36 shrink-0 text-xs font-medium text-muted-foreground">{label}</span>
-            <code className="flex-1 break-all font-mono text-sm">{variants[key]}</code>
+            <span className="w-36 shrink-0 text-xs font-medium text-muted-foreground">
+              {label}
+            </span>
+            <code className="flex-1 break-all font-mono text-sm">
+              {variants[key]}
+            </code>
             {variants[key] && <CopyButton text={variants[key]} compact />}
           </div>
         ))}

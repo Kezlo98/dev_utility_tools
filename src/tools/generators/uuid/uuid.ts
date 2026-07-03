@@ -4,7 +4,8 @@ import { ulid } from "ulid";
 export type UuidKind = "v4" | "v7" | "ulid";
 
 /** RFC 4122 v4 shape check (version + variant nibbles). */
-const V4_RE = /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
+const V4_RE =
+  /^[0-9a-f]{8}-[0-9a-f]{4}-4[0-9a-f]{3}-[89ab][0-9a-f]{3}-[0-9a-f]{12}$/i;
 
 /** Generate a single id of the requested kind. */
 export function generateOne(kind: UuidKind): string {

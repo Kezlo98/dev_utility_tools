@@ -29,7 +29,10 @@ describe("secureRandomInt", () => {
     // Chi-squared with df=3 has mean 3; a biased generator lands in the
     // hundreds. A generous ceiling (30 ≈ 11σ) keeps this a non-flaky spot
     // check that still trips on real modulo bias.
-    const chi = buckets.reduce((sum, n) => sum + Math.pow(n - expected, 2) / expected, 0);
+    const chi = buckets.reduce(
+      (sum, n) => sum + Math.pow(n - expected, 2) / expected,
+      0,
+    );
     expect(chi).toBeLessThan(30);
   });
 });

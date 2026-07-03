@@ -9,7 +9,9 @@ describe("hash", () => {
   });
 
   it("SHA-1 matches known vector (WebCrypto path)", async () => {
-    expect(await hash("sha1", "abc")).toBe("a9993e364706816aba3e25717850c26c9cd0d89d");
+    expect(await hash("sha1", "abc")).toBe(
+      "a9993e364706816aba3e25717850c26c9cd0d89d",
+    );
   });
 
   it("SHA-256 matches known vector (WebCrypto path)", async () => {

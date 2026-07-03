@@ -14,7 +14,10 @@ describe("url", () => {
 
   it("round-trips UTF-8 input", () => {
     const text = "café ☕/naïve";
-    const { output, error } = transformUrl(transformUrl(text, "encode").output, "decode");
+    const { output, error } = transformUrl(
+      transformUrl(text, "encode").output,
+      "decode",
+    );
     expect(error).toBeNull();
     expect(output).toBe(text);
   });

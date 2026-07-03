@@ -4,7 +4,10 @@ import { formatSql } from "./format-sql";
 
 describe("formatSql", () => {
   it("uppercases keywords and indents a SELECT", () => {
-    const { output, error } = formatSql("select id,name from users where id=1", "postgresql");
+    const { output, error } = formatSql(
+      "select id,name from users where id=1",
+      "postgresql",
+    );
     expect(error).toBeNull();
     expect(output).toContain("SELECT");
     expect(output).toContain("FROM");

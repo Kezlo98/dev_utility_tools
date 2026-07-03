@@ -23,26 +23,26 @@ export default function UuidTool() {
   const [output, setOutput] = useState("");
 
   return (
-    <div className="flex h-full flex-col gap-3">
-      <div className="flex flex-wrap items-center gap-3">
-        <div className="inline-flex rounded-md border border-input p-0.5">
+    <div className="flex h-full flex-col gap-4">
+      <div className="flex flex-wrap items-center gap-4 px-1">
+        <div className="inline-flex rounded-xl bg-muted/40 p-1 border border-border/40 backdrop-blur-sm shadow-sm gap-0.5">
           {KINDS.map((k) => (
             <button
               key={k.value}
               type="button"
               onClick={() => setKind(k.value)}
               className={cn(
-                "rounded px-3 py-1 text-xs font-medium transition-colors",
+                "rounded-lg px-3.5 py-1.5 text-xs font-medium transition-colors duration-150",
                 kind === k.value
-                  ? "bg-primary text-primary-foreground"
-                  : "text-muted-foreground hover:text-foreground",
+                  ? "bg-background text-foreground shadow-sm ring-1 ring-black/5 dark:ring-white/5 font-semibold"
+                  : "text-muted-foreground hover:text-foreground hover:bg-background/20",
               )}
             >
               {k.label}
             </button>
           ))}
         </div>
-        <label className="flex items-center gap-2 text-xs text-muted-foreground">
+        <label className="flex items-center gap-2.5 text-xs font-bold font-display uppercase tracking-widest text-muted-foreground/80">
           Count
           <Input
             type="number"
@@ -50,10 +50,14 @@ export default function UuidTool() {
             max={100}
             value={count}
             onChange={(e) => setCount(Number(e.target.value))}
-            className="h-8 w-20"
+            className="h-9 w-20 bg-background/30 border-border/50 focus-visible:ring-1 focus-visible:ring-primary/40 focus-visible:ring-offset-0 focus-visible:border-primary/50 text-center font-mono rounded-lg"
           />
         </label>
-        <Button size="sm" onClick={() => setOutput(generateBulk(kind, count))}>
+        <Button
+          size="sm"
+          onClick={() => setOutput(generateBulk(kind, count))}
+          className="h-9 px-4 rounded-lg shadow-sm"
+        >
           Generate
         </Button>
         <span className="ml-auto">
@@ -65,7 +69,7 @@ export default function UuidTool() {
         value={output}
         placeholder="Generated ids appear here…"
         spellCheck={false}
-        className="min-h-[50vh] flex-1 resize-none font-mono text-sm"
+        className="min-h-[50vh] flex-1 resize-none font-mono text-sm rounded-xl border-border/50 bg-background/20 backdrop-blur-[2px] p-4 resize-none leading-relaxed focus-visible:ring-1 focus-visible:ring-primary/30 focus-visible:ring-offset-0 focus-visible:border-primary/40"
       />
     </div>
   );

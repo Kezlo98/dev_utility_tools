@@ -11,10 +11,10 @@ The [`build-and-release`](../.github/workflows/ci-build-and-release.yml) workflo
 
 It runs a matrix:
 
-| Runner            | Artifact                                |
-| ----------------- | --------------------------------------- |
-| `macos-latest`    | Universal `.dmg` + `.app.tar.gz` (aarch64 + x86_64 lipo'd via `--target universal-apple-darwin`) |
-| `windows-latest`  | `.msi` (WiX) + `-setup.exe` (NSIS)      |
+| Runner           | Artifact                                                                                         |
+| ---------------- | ------------------------------------------------------------------------------------------------ |
+| `macos-latest`   | Universal `.dmg` + `.app.tar.gz` (aarch64 + x86_64 lipo'd via `--target universal-apple-darwin`) |
+| `windows-latest` | `.msi` (WiX) + `-setup.exe` (NSIS)                                                               |
 
 Artifacts are attached to a **draft** GitHub release. Publish the release once you've smoke-tested the bundles.
 
@@ -48,14 +48,14 @@ The signing pipeline is already scaffolded — enabling it later is a **secret-p
 
 ### macOS (Apple)
 
-| Secret                        | Value                                                                 |
-| ----------------------------- | --------------------------------------------------------------------- |
-| `APPLE_CERTIFICATE`           | Developer ID Application certificate, base64-encoded `.p12`           |
-| `APPLE_CERTIFICATE_PASSWORD`  | Password for the `.p12`                                               |
-| `APPLE_SIGNING_IDENTITY`      | Signing identity name, e.g. `Developer ID Application: Your Name (TEAM)` |
-| `APPLE_ID`                    | Apple ID for notarization                                             |
-| `APPLE_PASSWORD`             | App-specific password (appleid.apple.com → Sign-In & Security)        |
-| `APPLE_TEAM_ID`               | Developer Team ID                                                     |
+| Secret                       | Value                                                                    |
+| ---------------------------- | ------------------------------------------------------------------------ |
+| `APPLE_CERTIFICATE`          | Developer ID Application certificate, base64-encoded `.p12`              |
+| `APPLE_CERTIFICATE_PASSWORD` | Password for the `.p12`                                                  |
+| `APPLE_SIGNING_IDENTITY`     | Signing identity name, e.g. `Developer ID Application: Your Name (TEAM)` |
+| `APPLE_ID`                   | Apple ID for notarization                                                |
+| `APPLE_PASSWORD`             | App-specific password (appleid.apple.com → Sign-In & Security)           |
+| `APPLE_TEAM_ID`              | Developer Team ID                                                        |
 
 Export the `.p12` and base64 it: `base64 -i developer-id.p12 | pbcopy`.
 
@@ -63,10 +63,10 @@ Notarization (`APPLE_ID` / `APPLE_PASSWORD` / `APPLE_TEAM_ID`) is optional but r
 
 ### Windows (Authenticode)
 
-| Secret                        | Value                                              |
-| ----------------------------- | -------------------------------------------------- |
-| `WINDOWS_CERTIFICATE`         | Authenticode PFX, base64-encoded                   |
-| `WINDOWS_CERTIFICATE_PASSWORD`| Password for the PFX                               |
+| Secret                         | Value                            |
+| ------------------------------ | -------------------------------- |
+| `WINDOWS_CERTIFICATE`          | Authenticode PFX, base64-encoded |
+| `WINDOWS_CERTIFICATE_PASSWORD` | Password for the PFX             |
 
 The Windows `timestampUrl` (`http://timestamp.digicert.com`) is already configured in [`tauri.conf.json`](../src-tauri/tauri.conf.json), so signed builds are timestamped automatically.
 

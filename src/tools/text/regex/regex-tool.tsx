@@ -18,9 +18,14 @@ export default function RegexTool() {
   const [flags, setFlags] = useState("g");
   const [test, setTest] = useState("");
 
-  const flagError = FLAG_RE.test(flags) ? null : "Flags must be any of g i m s u y.";
+  const flagError = FLAG_RE.test(flags)
+    ? null
+    : "Flags must be any of g i m s u y.";
   const { matches, error } = useMemo(
-    () => (flagError ? { matches: [], error: flagError } : runRegex(pattern, flags, test)),
+    () =>
+      flagError
+        ? { matches: [], error: flagError }
+        : runRegex(pattern, flags, test),
     [pattern, flags, test, flagError],
   );
   const segments = useMemo(() => buildSegments(test, matches), [test, matches]);
@@ -66,12 +71,17 @@ export default function RegexTool() {
             </p>
             <pre className="whitespace-pre-wrap break-words font-mono text-sm">
               {segments.length === 0 ? (
-                <span className="text-muted-foreground">Highlights appear here…</span>
+                <span className="text-muted-foreground">
+                  Highlights appear here…
+                </span>
               ) : (
                 segments.map((seg, i) => (
                   <span
                     key={i}
-                    className={cn(seg.matched && "rounded bg-yellow-500/30 dark:bg-yellow-500/40")}
+                    className={cn(
+                      seg.matched &&
+                        "rounded bg-yellow-500/30 dark:bg-yellow-500/40",
+                    )}
                   >
                     {seg.text}
                   </span>
@@ -89,8 +99,12 @@ export default function RegexTool() {
                 <tbody>
                   {matches[0].groups.map((g, i) => (
                     <tr key={i} className="odd:bg-muted/30">
-                      <td className="px-2 py-1 font-mono text-muted-foreground">{i + 1}</td>
-                      <td className="break-all px-2 py-1 font-mono">{g ?? "(undefined)"}</td>
+                      <td className="px-2 py-1 font-mono text-muted-foreground">
+                        {i + 1}
+                      </td>
+                      <td className="break-all px-2 py-1 font-mono">
+                        {g ?? "(undefined)"}
+                      </td>
                     </tr>
                   ))}
                 </tbody>

@@ -11,6 +11,16 @@ export const sqlTools: Tool[] = [
     icon: Database,
     category: "format-validate",
     component: SqlTool,
-    keywords: ["sql", "format", "pretty", "beautify", "query", "postgres", "mysql", "sqlite", "tsql"],
+    keywords: [
+      "sql",
+      "format",
+      "pretty",
+      "beautify",
+      "query",
+      "postgres",
+      "mysql",
+      "sqlite",
+      "tsql",
+    ],
   },
 ];

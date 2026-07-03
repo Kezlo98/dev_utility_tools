@@ -97,16 +97,16 @@ const SearchableTextarea = React.forwardRef<
   const text = typeof value === "string" ? value : "";
 
   return (
-    <div className="relative min-h-0 flex-1 flex flex-col">
+    <div className="relative min-h-0 flex-1 flex flex-col h-full">
       {searchQuery && (
         <div
           ref={backdropRef}
           className={cn(
-            "absolute inset-0 w-full h-full rounded-md border border-transparent bg-transparent px-3 py-2 font-mono text-sm whitespace-pre-wrap break-words overflow-hidden pointer-events-none text-transparent select-none",
+            "absolute inset-0 w-full h-full rounded-xl border border-transparent bg-transparent px-4 py-3.5 font-mono text-sm whitespace-pre-wrap break-words overflow-hidden pointer-events-none text-transparent select-none",
             className,
           )}
           style={{
-            lineHeight: "1.25rem",
+            lineHeight: "1.5rem",
             scrollbarGutter: "stable",
           }}
         >
@@ -119,12 +119,13 @@ const SearchableTextarea = React.forwardRef<
         onChange={onChange}
         onScroll={handleScroll}
         className={cn(
-          "font-mono text-sm",
+          "font-mono text-sm rounded-xl border-border/50 bg-background/20 backdrop-blur-[2px] p-4 resize-none leading-relaxed transition-colors duration-150",
+          "focus-visible:ring-1 focus-visible:ring-primary/30 focus-visible:ring-offset-0 focus-visible:border-primary/40",
           searchQuery && "bg-transparent",
           className,
         )}
         style={{
-          lineHeight: "1.25rem",
+          lineHeight: "1.5rem",
           scrollbarGutter: "stable",
         }}
         {...props}
@@ -228,7 +229,7 @@ export function ToolIoPanels({
             onChange={(e) => onInputChange(e.target.value)}
             placeholder={inputPlaceholder}
             spellCheck={false}
-            className="min-h-[40vh] flex-1 resize-none font-mono text-sm"
+            className="h-full min-h-[40vh] flex-1 resize-none font-mono text-sm"
           />
         </Pane>
         <Pane
@@ -243,7 +244,7 @@ export function ToolIoPanels({
           {error ? (
             <p
               role="alert"
-              className="min-h-[40vh] flex-1 overflow-auto rounded-md border border-destructive/40 bg-destructive/5 p-3 font-mono text-sm text-destructive"
+              className="h-full min-h-[40vh] flex-1 overflow-auto rounded-xl border border-destructive/25 bg-destructive/5 dark:bg-destructive/10 p-4 font-mono text-sm text-destructive leading-relaxed"
             >
               {highlightText(error, searchQuery, false)}
             </p>
@@ -254,7 +255,7 @@ export function ToolIoPanels({
               readOnly
               placeholder={outputPlaceholder}
               spellCheck={false}
-              className="min-h-[40vh] flex-1 resize-none font-mono text-sm"
+              className="h-full min-h-[40vh] flex-1 resize-none font-mono text-sm"
             />
           )}
         </Pane>
@@ -273,9 +274,9 @@ function Pane({
   children: ReactNode;
 }) {
   return (
-    <div className="flex min-h-0 flex-col gap-1.5">
-      <div className="flex items-center justify-between">
-        <span className="text-xs font-medium uppercase tracking-wide text-muted-foreground">
+    <div className="flex min-h-0 flex-1 flex-col gap-2">
+      <div className="flex h-8 items-center justify-between px-1">
+        <span className="text-xs font-bold font-display uppercase tracking-widest text-muted-foreground/80">
           {label}
         </span>
         {action}

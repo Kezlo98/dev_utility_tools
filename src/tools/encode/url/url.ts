@@ -9,12 +9,19 @@ export function encodeUrl(input: string): string {
   return encodeURIComponent(input);
 }
 
-export function decodeUrl(input: string): { output: string; error: string | null } {
+export function decodeUrl(input: string): {
+  output: string;
+  error: string | null;
+} {
   if (!input) return { output: "", error: null };
   try {
     return { output: decodeURIComponent(input), error: null };
   } catch {
-    return { output: "", error: "Invalid URL encoding: malformed percent-escape sequence (e.g. a lone '%' or bad hex)." };
+    return {
+      output: "",
+      error:
+        "Invalid URL encoding: malformed percent-escape sequence (e.g. a lone '%' or bad hex).",
+    };
   }
 }
 

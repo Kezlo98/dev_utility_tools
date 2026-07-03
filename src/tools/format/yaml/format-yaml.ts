@@ -5,7 +5,10 @@ import { load, dump, CORE_SCHEMA } from "js-yaml";
  * Uses CORE_SCHEMA to disable JS-specific tags (e.g. `!!js/function`) so
  * untrusted YAML cannot trigger code execution on parse.
  */
-export function formatYaml(input: string): { output: string; error: string | null } {
+export function formatYaml(input: string): {
+  output: string;
+  error: string | null;
+} {
   const trimmed = input.trim();
   if (!trimmed) return { output: "", error: null };
   try {

@@ -3,10 +3,13 @@ import { describe, it, expect } from "vitest";
 import { generateOne, generateBulk, isV4, type UuidKind } from "./uuid";
 
 describe("uuid generator", () => {
-  it.each<UuidKind>(["v4", "v7", "ulid"])("produces non-empty ids for %s", (kind) => {
-    const id = generateOne(kind);
-    expect(id.length).toBeGreaterThan(10);
-  });
+  it.each<UuidKind>(["v4", "v7", "ulid"])(
+    "produces non-empty ids for %s",
+    (kind) => {
+      const id = generateOne(kind);
+      expect(id.length).toBeGreaterThan(10);
+    },
+  );
 
   it("emits v4 ids matching the RFC shape", () => {
     expect(isV4(generateOne("v4"))).toBe(true);

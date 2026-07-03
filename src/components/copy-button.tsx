@@ -35,10 +35,14 @@ export function CopyButton({ text, disabled = false, compact = false }: Props) {
       aria-label="Copy output"
       title="Copy output"
       className={cn(
-        "inline-flex items-center gap-1 rounded px-1.5 py-0.5 text-xs text-muted-foreground transition-colors hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40",
+        "inline-flex items-center gap-1.5 rounded-full px-3 py-1 text-xs bg-secondary/80 hover:bg-accent border border-border/40 text-muted-foreground transition-colors duration-150 hover:text-foreground focus-visible:outline-none focus-visible:ring-2 focus-visible:ring-ring disabled:pointer-events-none disabled:opacity-40 shadow-sm",
       )}
     >
-      {copied ? <Check className="h-3.5 w-3.5" /> : <Copy className="h-3.5 w-3.5" />}
+      {copied ? (
+        <Check className="h-3.5 w-3.5" />
+      ) : (
+        <Copy className="h-3.5 w-3.5" />
+      )}
       {!compact && (copied ? "Copied" : "Copy")}
     </button>
   );

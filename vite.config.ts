@@ -15,9 +15,7 @@ export default defineConfig({
     port: 1420,
     strictPort: true,
     host: host || false,
-    hmr: host
-      ? { protocol: "ws", host, port: 1421 }
-      : undefined,
+    hmr: host ? { protocol: "ws", host, port: 1421 } : undefined,
     watch: {
       // Tell Vite to ignore watching src-tauri.
       ignored: ["**/src-tauri/**"],
@@ -36,9 +34,7 @@ export default defineConfig({
   build: {
     // Tauri supports Chromium on Windows, WebKit on macOS/Linux.
     target:
-      process.env.TAURI_ENV_PLATFORM === "windows"
-        ? "chrome105"
-        : "safari13",
+      process.env.TAURI_ENV_PLATFORM === "windows" ? "chrome105" : "safari13",
     // Don't minify for easier debugging.
     minify: !process.env.TAURI_ENV_DEBUG ? "esbuild" : false,
     // Produce sourcemaps for debug builds.

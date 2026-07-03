@@ -22,7 +22,11 @@ function normalizeWhitespace(input: string): string {
  * breaks) collapse to "no change". Inputs over 100 KB each are rejected with a
  * readable error rather than freezing the UI.
  */
-export function computeDiff(a: string, b: string, ignoreWhitespace: boolean): DiffResult {
+export function computeDiff(
+  a: string,
+  b: string,
+  ignoreWhitespace: boolean,
+): DiffResult {
   if (a.length > MAX_DIFF_INPUT || b.length > MAX_DIFF_INPUT) {
     return {
       parts: [],

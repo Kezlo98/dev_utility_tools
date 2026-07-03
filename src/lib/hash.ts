@@ -27,7 +27,10 @@ export const HASH_ALGORITHMS: { value: HashAlgorithm; label: string }[] = [
  * Hash `input` with the given algorithm, returning a lowercase hex digest.
  * MD5 routes through spark-md5; everything else through WebCrypto.
  */
-export async function hash(algo: HashAlgorithm, input: string): Promise<string> {
+export async function hash(
+  algo: HashAlgorithm,
+  input: string,
+): Promise<string> {
   if (algo === "md5") {
     return SparkMD5.hash(input);
   }

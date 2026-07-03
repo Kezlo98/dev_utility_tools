@@ -1,6 +1,11 @@
 import { useMemo, useState } from "react";
 
-import { parseCrontab, listTimezones, systemTimezone, CRON_SYNTAX_NOTE } from "@/lib/cron-utils";
+import {
+  parseCrontab,
+  listTimezones,
+  systemTimezone,
+  CRON_SYNTAX_NOTE,
+} from "@/lib/cron-utils";
 import { Textarea } from "@/components/ui/textarea";
 
 const SAMPLE = `# m h dom mon dow command
@@ -84,8 +89,11 @@ export default function CrontabTool() {
                 >
                   <td className="px-3 py-2 text-muted-foreground">{r.line}</td>
                   <td className="px-3 py-2 font-mono">{r.expr}</td>
-                  <td className="max-w-xs truncate px-3 py-2 font-mono" title={r.command}>
-                    {r.command || "—"}
+                  <td
+                    className="max-w-xs truncate px-3 py-2 font-mono"
+                    title={r.command}
+                  >
+                    {r.command || "-"}
                   </td>
                   <td className="px-3 py-2">
                     {r.valid ? (
@@ -97,7 +105,7 @@ export default function CrontabTool() {
                     )}
                   </td>
                   <td className="px-3 py-2 font-mono text-muted-foreground">
-                    {r.next ?? "—"}
+                    {r.next ?? "-"}
                   </td>
                 </tr>
               ))}
