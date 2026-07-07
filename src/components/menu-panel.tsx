@@ -1,14 +1,18 @@
 import { useMemo, useState } from "react";
+import { ArrowUpCircle } from "lucide-react";
 
 import type { Tool } from "@/lib/types";
 import { getAllTools } from "@/lib/registry";
 import { sortToolsForMenu } from "@/lib/ordering";
 import { useAppStore } from "@/store/app-store";
+import { useUpdateCheck } from "@/hooks/use-update-check";
+import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { ScrollArea } from "@/components/ui/scroll-area";
 import { ThemeToggle } from "@/components/theme-toggle";
 import { MenuPanelItem } from "@/components/menu-panel-item";
 import { Logo } from "@/components/logo";
+import { UpdateModal } from "@/components/update-modal";
 import { cn, isMac } from "@/lib/utils";
 
 /**
@@ -18,9 +22,11 @@ import { cn, isMac } from "@/lib/utils";
  */
 export function MenuPanel() {
   const [query, setQuery] = useState("");
+  const [updateModalOpen, setUpdateModalOpen] = useState(false);
   const allTools = getAllTools();
   const favorites = useAppStore((s) => s.favorites);
   const lastActiveToolId = useAppStore((s) => s.lastActiveToolId);
+  const updateState = useUpdateCheck();
 
   const favSet = useMemo(() => new Set(favorites), [favorites]);
 
@@ -57,6 +63,17 @@ export function MenuPanel() {
                 <span className="text-lg font-bold font-display tracking-tight text-foreground/90">
                   DevKit
                 </span>
+                {updateState.hasUpdate && (
+                  <Button
+                    variant="ghost"
+                    size="icon"
+                    aria-label="View available update"
+                    className="ml-auto h-7 w-7 text-foreground/90"
+                    onClick={() => setUpdateModalOpen(true)}
+                  >
+                    <ArrowUpCircle className="h-4 w-4" />
+                  </Button>
+                )}
               </div>
               <Input
                 value={query}
@@ -96,6 +113,11 @@ export function MenuPanel() {
           </div>
         </div>
       </div>
+      <UpdateModal
+        open={updateModalOpen}
+        onOpenChange={setUpdateModalOpen}
+        state={updateState}
+      />
     </aside>
   );
 }
