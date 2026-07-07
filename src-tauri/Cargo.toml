@@ -1,6 +1,6 @@
 [package]
 name = "devkit"
-version = "0.1.0"
+version = "0.1.1"
 description = "DevKit — cross-platform developer utilities desktop app"
 authors = ["kezlo"]
 edition = "2021"

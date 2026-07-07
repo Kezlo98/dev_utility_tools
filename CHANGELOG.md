@@ -12,6 +12,8 @@ update modal both depend on it.
 
 ## [Unreleased]
 
+## [0.1.1] - 2026-07-07
+
 ### Added
 
 - Manual update notifier: checks GitHub Releases on launch and hourly, surfaces
