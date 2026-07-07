@@ -5,9 +5,10 @@ import type { ThemeMode } from "@/lib/types";
 import { stateStorage } from "@/store/persistence";
 
 /**
- * App-wide UI state. The four persisted fields (favorites, theme,
- * lastActiveToolId, paletteRecents) survive restarts via the zustand `persist`
- * middleware backed by localStorage under the `devkit:` namespace.
+ * App-wide UI state. The five persisted fields (favorites, theme,
+ * lastActiveToolId, paletteRecents, ignoredVersion) survive restarts via the
+ * zustand `persist` middleware backed by localStorage under the `devkit:`
+ * namespace.
  *
  * Hydration is synchronous (localStorage is sync), so the store is ready
  * before React mounts — no flash, no hydration race. Writes only happen on
@@ -21,12 +22,14 @@ interface AppState {
   theme: ThemeMode;
   lastActiveToolId: string | null;
   paletteRecents: string[];
+  ignoredVersion: string | null;
 
   toggleFavorite: (id: string) => void;
   isFavorite: (id: string) => boolean;
   setTheme: (mode: ThemeMode) => void;
   setActiveTool: (id: string) => void;
   recordRecent: (id: string) => void;
+  setIgnoredVersion: (v: string) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -36,6 +39,7 @@ export const useAppStore = create<AppState>()(
       theme: "system",
       lastActiveToolId: null,
       paletteRecents: [],
+      ignoredVersion: null,
 
       toggleFavorite: (id) =>
         set((s) => ({
@@ -57,6 +61,8 @@ export const useAppStore = create<AppState>()(
             ...s.paletteRecents.filter((r) => r !== id),
           ].slice(0, MAX_RECENTS),
         })),
+
+      setIgnoredVersion: (v) => set({ ignoredVersion: v }),
     }),
     {
       name: "app-state",
@@ -66,6 +72,7 @@ export const useAppStore = create<AppState>()(
         theme: s.theme,
         lastActiveToolId: s.lastActiveToolId,
         paletteRecents: s.paletteRecents,
+        ignoredVersion: s.ignoredVersion,
       }),
     },
   ),
