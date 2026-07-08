@@ -9,14 +9,37 @@ The [`build-and-release`](../.github/workflows/ci-build-and-release.yml) workflo
 - **Tag push** — `git tag vX.Y.Z && git push --tags`
 - **Manual dispatch** — via the GitHub Actions UI ("Run workflow")
 
-It runs a matrix:
+On a **tag push**, a `changelog` gate job runs first, then the build matrix:
 
 | Runner           | Artifact                                                                                         |
 | ---------------- | ------------------------------------------------------------------------------------------------ |
 | `macos-latest`   | Universal `.dmg` + `.app.tar.gz` (aarch64 + x86_64 lipo'd via `--target universal-apple-darwin`) |
 | `windows-latest` | `.msi` (WiX) + `-setup.exe` (NSIS)                                                               |
 
-Artifacts are attached to a **draft** GitHub release. Publish the release once you've smoke-tested the bundles.
+Artifacts are attached to a **draft** GitHub release.
+
+### Changelog gate (source of truth)
+
+[`CHANGELOG.md`](../CHANGELOG.md) is the single source of truth for release notes. On a tag push the `changelog` job:
+
+1. Derives the version from the tag (`v0.2.0` → `0.2.0`).
+2. Extracts the matching `## [0.2.0]` section from `CHANGELOG.md`.
+3. **Fails the release before any build runs** if that section is missing (`::error::No CHANGELOG.md section for …`).
+4. Passes the extracted text into the GitHub release body, which the in-app update modal renders.
+
+So the release checklist is: **add a `## [X.Y.Z] - YYYY-MM-DD` section to `CHANGELOG.md` before tagging `vX.Y.Z`.** Keep the heading format exact (`## [X.Y.Z]`) — the extractor and the app both key off it.
+
+The gate is tag-guarded (`github.ref_type == 'tag'`). A **manual dispatch** runs on a branch ref, so the gate is skipped and the build publishes with **no injected changelog body** — dispatch builds are for smoke-testing, not for releases the notifier should surface.
+
+### Manual publish is required (draft window)
+
+Releases are created as **drafts** (`releaseDraft: true`, retained intentionally). The in-app update notifier polls the **anonymous** GitHub Releases API, which does **not** return draft releases. So a draft is invisible to users until a maintainer publishes it:
+
+1. Let CI finish and attach the artifacts to the draft release.
+2. Smoke-test the bundles.
+3. **Publish the draft in the GitHub Releases UI.**
+
+Only after publishing does the update icon appear in users' running apps. The draft window is the deliberate review gate — do not flip `releaseDraft` to `false`.
 
 Quality gate: the [`typecheck-lint`](../.github/workflows/ci-typecheck-lint.yml) workflow runs on every PR and push to `master` — frontend typecheck/lint/tests and Rust `fmt`/`clippy`/`test`. It must be green before a release tag.
 

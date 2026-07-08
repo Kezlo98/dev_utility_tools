@@ -11,8 +11,42 @@ on:
     tags: ["v*"]
 
 jobs:
+  # Gate the release on a matching CHANGELOG.md section and hand its text to the
+  # build job. Tag-guarded: on workflow_dispatch (a branch ref, not vX.Y.Z) this
+  # job is skipped, and publish runs with no injected changelog body.
+  changelog:
+    name: Changelog gate
+    if: github.ref_type == 'tag'
+    runs-on: ubuntu-latest
+    outputs:
+      # Base64-encoded to preserve newlines across the job boundary — GitHub
+      # Actions job outputs mishandle raw multi-line strings.
+      body_b64: ${{ steps.extract.outputs.body_b64 }}
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Extract changelog section
+        id: extract
+        run: |
+          VERSION="${GITHUB_REF_NAME#v}"
+          BODY=$(awk -v ver="$VERSION" '
+            $0 ~ "^## \\[" ver "\\]" { capture=1; next }
+            capture && /^## \[/ { exit }
+            capture { print }
+          ' CHANGELOG.md)
+          if [ -z "$(printf '%s' "$BODY" | tr -d '[:space:]')" ]; then
+            echo "::error::No CHANGELOG.md section for $VERSION"
+            exit 1
+          fi
+          ENCODED=$(printf '%s' "$BODY" | base64 | tr -d '\n')
+          echo "body_b64=$ENCODED" >> "$GITHUB_OUTPUT"
+
   publish:
     name: Build (${{ matrix.platform }})
+    needs: changelog
+    # Run even when the changelog gate is skipped (workflow_dispatch), but not
+    # when it failed (missing section) or the run was cancelled.
+    if: ${{ !failure() && !cancelled() }}
     strategy:
       fail-fast: false
       matrix:
@@ -40,6 +74,21 @@ jobs:
 
       - run: npm ci
 
+      # Decode the changelog body from the gate job. Skipped on workflow_dispatch
+      # (gate skipped → no output), leaving releaseBody empty. bash shell so
+      # `base64` is available on the Windows runner too.
+      - name: Decode changelog body
+        id: changelog
+        if: needs.changelog.result == 'success'
+        shell: bash
+        run: |
+          {
+            echo "body<<CHANGELOG_EOF"
+            printf '%s' "${{ needs.changelog.outputs.body_b64 }}" | base64 -d
+            echo ""
+            echo "CHANGELOG_EOF"
+          } >> "$GITHUB_OUTPUT"
+
       # Signing env vars. All optional for bootstrap; tauri-action ignores
       # them when absent and produces unsigned bundles.
       - name: Build & release
@@ -59,6 +108,7 @@ jobs:
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "DevKit ${{ github.ref_name }}"
+          releaseBody: ${{ steps.changelog.outputs.body }}
           releaseDraft: true
           prerelease: false
           args: ${{ matrix.args }}
