@@ -1,6 +1,6 @@
 # Release & Signing
 
-DevKit ships from CI. This doc covers how a release is produced, the first-launch experience for the **unsigned** bootstrap builds, and how to enable code signing later without rewriting the workflow.
+DevKit ships from CI. This doc covers how a release is produced, the first-launch experience for the **unsigned** bootstrap builds, and how to enable code signing later.
 
 ## Producing a release
 
@@ -67,7 +67,9 @@ The unsigned `.exe` / `.msi` triggers SmartScreen:
 
 ## Enabling signing (follow-up)
 
-The signing pipeline is already scaffolded — enabling it later is a **secret-population step, not a workflow edit**. Populate these GitHub repository secrets and the next release signs automatically:
+The bootstrap workflow intentionally omits signing environment variables. Empty signing variables can still be treated as present by the Tauri release tooling; on macOS this causes certificate import failures instead of an unsigned build.
+
+To enable signing later, populate the matching GitHub repository secrets and then wire those secrets into the `Build & release` step in `.github/workflows/ci-build-and-release.yml`.
 
 ### macOS (Apple)
 
@@ -96,6 +98,8 @@ The Windows `timestampUrl` (`http://timestamp.digicert.com`) is already configur
 ### Tauri updater (optional, post-bootstrap)
 
 If auto-update is added later, also set `TAURI_SIGNING_PRIVATE_KEY` / `TAURI_SIGNING_PRIVATE_KEY_PASSWORD` so update bundles are signed and the updater verifies them at install time.
+
+Do not add signing variables with empty or placeholder values. Leave them absent until real certificates and keys are available.
 
 ## Notes
 

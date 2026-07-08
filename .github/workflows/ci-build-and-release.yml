@@ -1,14 +1,16 @@
 name: build-and-release
 
 # Builds distributable bundles on a tag push (`v*`) or manual dispatch.
-# Bootstrap ships UNSIGNED on both platforms; the signing secrets below are
-# scaffolded but unset, so tauri-action produces unsigned artifacts. Populate
-# the secrets later to enable signing without editing this workflow. See
-# docs/release-and-signing.md.
+# Bootstrap ships UNSIGNED on both platforms. Do not pass empty signing env vars
+# to tauri-action; on macOS, an empty APPLE_CERTIFICATE still triggers a failed
+# certificate import. See docs/release-and-signing.md before enabling signing.
 on:
   workflow_dispatch:
   push:
     tags: ["v*"]
+
+permissions:
+  contents: write
 
 jobs:
   # Gate the release on a matching CHANGELOG.md section and hand its text to the
@@ -44,11 +46,6 @@ jobs:
   publish:
     name: Build (${{ matrix.platform }})
     needs: changelog
-    # tauri-action creates the GitHub release, which needs write access to
-    # repository contents. Without this, GITHUB_TOKEN defaults to read-only and
-    # release creation fails with "Resource not accessible by integration".
-    permissions:
-      contents: write
     # Run even when the changelog gate is skipped (workflow_dispatch), but not
     # when it failed (missing section) or the run was cancelled.
     if: ${{ !failure() && !cancelled() }}
@@ -94,22 +91,12 @@ jobs:
             echo "CHANGELOG_EOF"
           } >> "$GITHUB_OUTPUT"
 
-      # Signing env vars. All optional for bootstrap; tauri-action ignores
-      # them when absent and produces unsigned bundles.
+      # Signing env vars are intentionally omitted for bootstrap unsigned builds.
+      # Add them back only after the corresponding repository secrets exist.
       - name: Build & release
         uses: tauri-apps/tauri-action@v0
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
-          APPLE_CERTIFICATE: ${{ secrets.APPLE_CERTIFICATE }}
-          APPLE_CERTIFICATE_PASSWORD: ${{ secrets.APPLE_CERTIFICATE_PASSWORD }}
-          APPLE_SIGNING_IDENTITY: ${{ secrets.APPLE_SIGNING_IDENTITY }}
-          APPLE_ID: ${{ secrets.APPLE_ID }}
-          APPLE_PASSWORD: ${{ secrets.APPLE_PASSWORD }}
-          APPLE_TEAM_ID: ${{ secrets.APPLE_TEAM_ID }}
-          TAURI_SIGNING_PRIVATE_KEY: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY }}
-          TAURI_SIGNING_PRIVATE_KEY_PASSWORD: ${{ secrets.TAURI_SIGNING_PRIVATE_KEY_PASSWORD }}
-          WINDOWS_CERTIFICATE: ${{ secrets.WINDOWS_CERTIFICATE }}
-          WINDOWS_CERTIFICATE_PASSWORD: ${{ secrets.WINDOWS_CERTIFICATE_PASSWORD }}
         with:
           tagName: ${{ github.ref_name }}
           releaseName: "DevKit ${{ github.ref_name }}"

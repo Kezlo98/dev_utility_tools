@@ -65,9 +65,9 @@ Releases are managed by the GitHub Actions workflow located in [.github/workflow
 
 ## 4. Code Signing Configuration
 
-During the initial bootstrap phase, installers are built **unsigned** to bypass the need for active developer certs. When certs are provisioned, signing can be enabled simply by adding the secrets listed below to your GitHub repository.
+During the initial bootstrap phase, installers are built **unsigned** to bypass the need for active developer certs. The release workflow intentionally omits signing environment variables until real certificates are available; empty signing values can make the build attempt signing and fail.
 
-Refer to [release-and-signing.md](file:///Users/kezlo/Workspaces/kezlo/dev_utility_tools/docs/release-and-signing.md) for certificate export guidelines and OS-specific first-launch Gatekeeper/SmartScreen bypass instructions.
+Refer to [release-and-signing.md](file:///Users/kezlo/Workspaces/kezlo/dev_utility_tools/docs/release-and-signing.md) for certificate export guidelines, workflow wiring notes, and OS-specific first-launch Gatekeeper/SmartScreen bypass instructions.
 
 ### macOS (Apple Developer Certificates)
 
