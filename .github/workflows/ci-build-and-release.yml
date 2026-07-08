@@ -44,6 +44,11 @@ jobs:
   publish:
     name: Build (${{ matrix.platform }})
     needs: changelog
+    # tauri-action creates the GitHub release, which needs write access to
+    # repository contents. Without this, GITHUB_TOKEN defaults to read-only and
+    # release creation fails with "Resource not accessible by integration".
+    permissions:
+      contents: write
     # Run even when the changelog gate is skipped (workflow_dispatch), but not
     # when it failed (missing section) or the run was cancelled.
     if: ${{ !failure() && !cancelled() }}
