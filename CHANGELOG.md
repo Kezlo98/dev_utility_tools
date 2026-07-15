@@ -12,6 +12,15 @@ update modal both depend on it.
 
 ## [Unreleased]
 
+### Added
+
+- Base64 file support: input type (Text/File) is auto-detected from whether a
+  file is loaded, with an explicit Output type toggle (Text/File) alongside the
+  existing Encode/Decode direction. Text↔Text stays live and instant; any combo
+  touching a file uses native open/save dialogs. Drag a file onto the input pane
+  to load it (switches to File automatically); multi-file drops are rejected
+  with a friendly message.
+
 ## [0.1.1] - 2026-07-07
 
 ### Added

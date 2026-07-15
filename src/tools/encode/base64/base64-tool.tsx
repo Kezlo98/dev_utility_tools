@@ -73,14 +73,13 @@ function TypeToggle({
 }
 
 /**
- * Base64 encoder/decoder with a unified 3-toggle model — Direction, Input type,
- * Output type — covering all 8 combinations. Text↔Text stays live/instant; any
- * combo touching a file is dialog-triggered. A file dropped onto the input pane
- * always switches Input type to File and loads it.
+ * Base64 encoder/decoder. Direction and Output type are explicit toggles;
+ * Input type is auto-detected from whether a file is loaded (Text otherwise).
+ * Text↔Text stays live/instant; any combo touching a file is dialog-triggered.
+ * A file dropped onto the input pane loads it and switches Input to File.
  */
 export default function Base64Tool() {
   const [direction, setDirection] = useState<Direction>("encode");
-  const [inputType, setInputType] = useState<Side>("text");
   const [outputType, setOutputType] = useState<Side>("text");
 
   const [textInput, setTextInput] = useState("");
@@ -93,6 +92,9 @@ export default function Base64Tool() {
   const [dragOver, setDragOver] = useState(false);
 
   const inputPaneRef = useRef<HTMLDivElement>(null);
+
+  // Input type is derived, not chosen: a loaded file means File, otherwise Text.
+  const inputType: Side = inputPath ? "file" : "text";
 
   // Text↔Text: live, derive output/error directly. File-involved combos use state.
   const live = useMemo(
@@ -113,8 +115,8 @@ export default function Base64Tool() {
     setDirection(next);
     if (!isLiveText) resetOutput();
   }
-  function onInputTypeChange(next: Side) {
-    setInputType(next);
+  function onClearFile() {
+    setInputPath(null);
     resetOutput();
   }
   function onOutputTypeChange(next: Side) {
@@ -125,7 +127,7 @@ export default function Base64Tool() {
   // File input → Text output: auto-invoke as soon as a file is loaded, and
   // re-invoke when direction flips while a file is already loaded.
   useEffect(() => {
-    if (inputType !== "file" || outputType !== "text" || !inputPath) return;
+    if (outputType !== "text" || !inputPath) return;
     let cancelled = false;
     setLoading(true);
     setError(null);
@@ -171,7 +173,6 @@ export default function Base64Tool() {
           setError("Only one file at a time — drop a single file.");
           return;
         }
-        setInputType("file");
         setInputPath(paths[0]);
         setOutput("");
         setError(null);
@@ -203,7 +204,6 @@ export default function Base64Tool() {
   async function onChooseFile() {
     const path = await open({ multiple: false });
     if (!path || Array.isArray(path)) return;
-    setInputType("file");
     setInputPath(path);
     resetOutput();
   }
@@ -246,11 +246,6 @@ export default function Base64Tool() {
           onDirectionChange={onDirectionChange}
         />
         <TypeToggle
-          label="In"
-          value={inputType}
-          onChange={onInputTypeChange}
-        />
-        <TypeToggle
           label="Out"
           value={outputType}
           onChange={onOutputTypeChange}
@@ -264,6 +259,15 @@ export default function Base64Tool() {
             <span className="text-xs font-bold font-display uppercase tracking-widest text-muted-foreground/80">
               Input
             </span>
+            <Button
+              size="sm"
+              variant="ghost"
+              onClick={onChooseFile}
+              disabled={loading}
+              className="h-6 px-2 text-xs"
+            >
+              Choose File…
+            </Button>
           </div>
           <div
             ref={inputPaneRef}
@@ -274,7 +278,21 @@ export default function Base64Tool() {
                 : "border-border/50 bg-background/20",
             )}
           >
-            {inputType === "text" ? (
+            {inputPath ? (
+              <div className="flex flex-wrap items-center gap-3 p-4">
+                <span className="font-mono text-sm text-muted-foreground">
+                  {basename(inputPath)}
+                </span>
+                <Button
+                  size="sm"
+                  variant="outline"
+                  onClick={onClearFile}
+                  disabled={loading}
+                >
+                  Clear
+                </Button>
+              </div>
+            ) : (
               <Textarea
                 value={textInput}
                 onChange={(e) => {
@@ -286,22 +304,6 @@ export default function Base64Tool() {
                 spellCheck={false}
                 className="h-full min-h-[40vh] flex-1 resize-none border-transparent bg-transparent p-4 font-mono text-sm leading-relaxed"
               />
-            ) : (
-              <div className="flex flex-wrap items-center gap-3 p-4">
-                <Button
-                  size="sm"
-                  variant="outline"
-                  onClick={onChooseFile}
-                  disabled={loading}
-                >
-                  Choose File
-                </Button>
-                {inputPath && (
-                  <span className="font-mono text-sm text-muted-foreground">
-                    {basename(inputPath)}
-                  </span>
-                )}
-              </div>
             )}
             {dragOver && (
               <div className="pointer-events-none absolute inset-0 flex items-center justify-center rounded-xl border-2 border-dashed border-primary/60 bg-primary/5 font-mono text-sm text-primary">
