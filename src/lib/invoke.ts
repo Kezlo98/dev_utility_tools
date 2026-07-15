@@ -1,9 +1,11 @@
 import { invoke } from "@tauri-apps/api/core";
 
+import type { Direction } from "@/tools/encode/direction-toggle";
+
 /**
- * Typed wrappers over the Rust crypto commands. Each command returns
- * `Result<T, String>`; a rejected promise carries the error string for inline
- * rendering in the tool UI.
+ * Typed wrappers over the Rust crypto and base64 file-mode commands. Each
+ * command returns `Result<T, String>`; a rejected promise carries the error
+ * string for inline rendering in the tool UI.
  */
 
 /** Generate a bcrypt hash for `password` at `cost` (4–14). */
@@ -39,4 +41,43 @@ export function jwtVerify(
   algorithm: JwtAlgorithm,
 ): Promise<JwtParts> {
   return invoke<JwtParts>("jwt_verify", { token, secret, algorithm });
+}
+
+/** Encode a file's contents to a base64 string. Rejects files over the 10MB text-mode cap. */
+export function base64EncodeFileToString(path: string): Promise<string> {
+  return invoke<string>("base64_encode_file_to_string", { path });
+}
+
+/** Decode a base64 string and write the bytes to `outputPath`. Rejects decoded output over the 10MB text-mode cap. */
+export function base64DecodeStringToFile(
+  data: string,
+  outputPath: string,
+): Promise<void> {
+  return invoke<void>("base64_decode_string_to_file", { data, outputPath });
+}
+
+/** Decode a file's base64 contents to a string. Rejects files over the 10MB text-mode cap. */
+export function base64DecodeFileToString(path: string): Promise<string> {
+  return invoke<string>("base64_decode_file_to_string", { path });
+}
+
+/** Encode a string and write the base64 bytes to `outputPath`. Rejects encoded output over the 10MB text-mode cap. */
+export function base64EncodeStringToFile(
+  data: string,
+  outputPath: string,
+): Promise<void> {
+  return invoke<void>("base64_encode_string_to_file", { data, outputPath });
+}
+
+/** Read `inputPath`, encode or decode per `direction`, and write `outputPath`. No size cap. */
+export function base64TransformFile(
+  inputPath: string,
+  outputPath: string,
+  direction: Direction,
+): Promise<void> {
+  return invoke<void>("base64_transform_file", {
+    inputPath,
+    outputPath,
+    direction,
+  });
 }

@@ -22,6 +22,14 @@ vi.mock("@tauri-apps/api/core", () => ({
   invoke: vi.fn().mockResolvedValue(undefined),
 }));
 
+// Base64 registers a drag-drop listener on mount via getCurrentWebview(); stub
+// it so the unconditional mount-time call resolves a no-op unlisten in jsdom.
+vi.mock("@tauri-apps/api/webview", () => ({
+  getCurrentWebview: () => ({
+    onDragDropEvent: vi.fn().mockResolvedValue(() => {}),
+  }),
+}));
+
 const tools = getAllTools();
 
 describe("tool registry", () => {
