@@ -14,6 +14,8 @@ pub fn run() {
             commands::base64_file_cmd::base64_encode_file_to_string,
             commands::base64_file_cmd::base64_decode_string_to_file,
             commands::base64_file_cmd::base64_transform_file,
+            commands::base64_file_cmd::base64_decode_file_to_string,
+            commands::base64_file_cmd::base64_encode_string_to_file,
         ])
         .run(tauri::generate_context!())
         .expect("error while running tauri application");

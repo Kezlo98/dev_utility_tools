@@ -49,6 +49,26 @@ pub async fn base64_transform_file(
     .map_err(|e| format!("base64 transform task failed: {e}"))?
 }
 
+/// Read a file of base64 text, decode it, and return the decoded UTF-8 string
+/// (bounded by [`TEXT_MODE_SIZE_CAP`]). Errors cleanly when the decoded bytes
+/// aren't valid UTF-8 (e.g. the file encoded binary data).
+#[tauri::command]
+pub async fn base64_decode_file_to_string(path: String) -> Result<String, String> {
+    tauri::async_runtime::spawn_blocking(move || decode_file_bytes_to_string(&path))
+        .await
+        .map_err(|e| format!("base64 decode task failed: {e}"))?
+}
+
+/// Base64-encode `data` and write it to `output_path` (input bounded by
+/// [`TEXT_MODE_SIZE_CAP`] — checked before encoding so a huge string isn't
+/// encoded just to be rejected).
+#[tauri::command]
+pub async fn base64_encode_string_to_file(data: String, output_path: String) -> Result<(), String> {
+    tauri::async_runtime::spawn_blocking(move || encode_string_to_file(&data, &output_path))
+        .await
+        .map_err(|e| format!("base64 encode task failed: {e}"))?
+}
+
 /// Friendly rejection when `len` exceeds the text-pane size cap.
 pub fn check_size_cap(len: u64) -> Result<(), String> {
     if len > TEXT_MODE_SIZE_CAP {
@@ -68,6 +88,31 @@ pub fn encode_file_bytes(path: &str) -> Result<String, String> {
     check_size_cap(metadata.len())?;
     let bytes = std::fs::read(path).map_err(|e| format!("failed to read file: {e}"))?;
     Ok(STANDARD.encode(bytes))
+}
+
+/// Sync helper: read a file of base64 text, decode it, and return the decoded
+/// string. Size-caps via metadata before reading (same guard as
+/// [`encode_file_bytes`]). The file's *contents* are the base64 text, so it's
+/// read as a string; decoded bytes must be valid UTF-8 or this errors cleanly
+/// rather than producing mojibake.
+pub fn decode_file_bytes_to_string(path: &str) -> Result<String, String> {
+    let metadata = std::fs::metadata(path).map_err(|e| format!("failed to read file: {e}"))?;
+    check_size_cap(metadata.len())?;
+    let contents =
+        std::fs::read_to_string(path).map_err(|e| format!("failed to read file: {e}"))?;
+    let bytes = decode_base64_str(&contents)?;
+    String::from_utf8(bytes).map_err(|_| {
+        "Decoded bytes are not valid UTF-8 text (this looks like binary data).".to_string()
+    })
+}
+
+/// Sync helper: base64-encode `data` and write it to `output_path`. Caps the
+/// input string's byte length before encoding (mirrors [`encode_file_bytes`]'s
+/// pre-read check).
+pub fn encode_string_to_file(data: &str, output_path: &str) -> Result<(), String> {
+    check_size_cap(data.len() as u64)?;
+    let encoded = STANDARD.encode(data.as_bytes());
+    write_bytes(output_path, encoded.as_bytes())
 }
 
 /// Sync helper: decode a base64 string to bytes, bounded by [`TEXT_MODE_SIZE_CAP`].
@@ -233,5 +278,54 @@ mod tests {
 
         assert_eq!(fs::read(&path).unwrap(), b"data");
         fs::remove_file(&path).unwrap();
+    }
+
+    #[test]
+    fn encode_string_to_file_round_trips() {
+        let path = temp_path("encode_string_to_file");
+        let original = "hello devkit — encode me";
+
+        encode_string_to_file(original, path.to_str().unwrap()).unwrap();
+
+        let encoded_text = std::fs::read_to_string(&path).unwrap();
+        let decoded = STANDARD.decode(encoded_text.trim()).unwrap();
+        assert_eq!(decoded, original.as_bytes());
+        fs::remove_file(&path).unwrap();
+    }
+
+    #[test]
+    fn decode_file_bytes_to_string_round_trips_with_encode_string_to_file() {
+        let path = temp_path("decode_file_roundtrip");
+        let original = "round-trip me";
+
+        encode_string_to_file(original, path.to_str().unwrap()).unwrap();
+        let decoded = decode_file_bytes_to_string(path.to_str().unwrap()).unwrap();
+
+        assert_eq!(decoded, original);
+        fs::remove_file(&path).unwrap();
+    }
+
+    #[test]
+    fn decode_file_bytes_to_string_errors_on_non_utf8_decoded_bytes() {
+        // 0xFF 0xFE 0xFD is not valid UTF-8 — decoding it to text must fail cleanly.
+        let bytes = vec![0xFF, 0xFE, 0xFD];
+        let encoded = STANDARD.encode(&bytes);
+
+        let path = temp_path("decode_non_utf8");
+        fs::write(&path, &encoded).unwrap();
+
+        let err = decode_file_bytes_to_string(path.to_str().unwrap()).unwrap_err();
+        assert!(err.contains("not valid UTF-8 text"), "{err}");
+        fs::remove_file(&path).unwrap();
+    }
+
+    #[test]
+    fn encode_string_to_file_rejects_over_cap() {
+        let path = temp_path("encode_over_cap");
+        let oversize = "a".repeat(TEXT_MODE_SIZE_CAP as usize + 1);
+
+        let err = encode_string_to_file(&oversize, path.to_str().unwrap()).unwrap_err();
+        assert!(err.contains("10MB"), "{err}");
+        assert!(!path.exists(), "no file should be written on rejection");
     }
 }
