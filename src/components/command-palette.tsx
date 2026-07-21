@@ -1,6 +1,7 @@
-import { useMemo } from "react";
+import { useMemo, useState } from "react";
 
 import { getAllTools, getToolById } from "@/lib/registry";
+import { filterTools } from "@/lib/tool-search";
 import { useAppStore } from "@/store/app-store";
 import {
   CommandDialog,
@@ -25,7 +26,9 @@ interface Props {
  * sees a duplicate value. Enter navigates and records a recent.
  */
 export function CommandPalette({ open, onOpenChange }: Props) {
+  const [query, setQuery] = useState("");
   const tools = useMemo(() => getAllTools(), []);
+  const filteredTools = useMemo(() => filterTools(tools, query), [tools, query]);
   const paletteRecents = useAppStore((s) => s.paletteRecents);
   const setActiveTool = useAppStore((s) => s.setActiveTool);
   const recordRecent = useAppStore((s) => s.recordRecent);
@@ -34,26 +37,38 @@ export function CommandPalette({ open, onOpenChange }: Props) {
 
   const recentTools = useMemo(
     () =>
-      paletteRecents
-        .map((id) => getToolById(id))
-        .filter((t): t is NonNullable<typeof t> => Boolean(t)),
-    [paletteRecents],
+      query.trim()
+        ? []
+        : paletteRecents
+            .map((id) => getToolById(id))
+            .filter((t): t is NonNullable<typeof t> => Boolean(t)),
+    [paletteRecents, query],
   );
 
   const otherTools = useMemo(
-    () => tools.filter((t) => !recentIds.has(t.id)),
-    [tools, recentIds],
+    () => filteredTools.filter((t) => query.trim() || !recentIds.has(t.id)),
+    [filteredTools, query, recentIds],
   );
 
   function navigate(id: string) {
     setActiveTool(id);
     recordRecent(id);
+    setQuery("");
     onOpenChange(false);
   }
 
+  function handleOpenChange(nextOpen: boolean) {
+    if (!nextOpen) setQuery("");
+    onOpenChange(nextOpen);
+  }
+
   return (
-    <CommandDialog open={open} onOpenChange={onOpenChange}>
-      <CommandInput placeholder="Search tools…" />
+    <CommandDialog open={open} onOpenChange={handleOpenChange}>
+      <CommandInput
+        value={query}
+        onValueChange={setQuery}
+        placeholder="Search tools…"
+      />
       <CommandList>
         <CommandEmpty>No tools found.</CommandEmpty>
         {recentTools.length > 0 && (

@@ -4,6 +4,7 @@ import { ArrowUpCircle } from "lucide-react";
 import type { Tool } from "@/lib/types";
 import { getAllTools } from "@/lib/registry";
 import { sortToolsForMenu } from "@/lib/ordering";
+import { filterTools } from "@/lib/tool-search";
 import { useAppStore } from "@/store/app-store";
 import { useUpdateCheck } from "@/hooks/use-update-check";
 import { Button } from "@/components/ui/button";
@@ -30,14 +31,10 @@ export function MenuPanel() {
 
   const favSet = useMemo(() => new Set(favorites), [favorites]);
 
-  const filtered = useMemo(() => {
-    const q = query.trim().toLowerCase();
-    if (!q) return allTools;
-    return allTools.filter((t) => {
-      const haystack = [t.name, ...(t.keywords ?? [])].join(" ").toLowerCase();
-      return haystack.includes(q);
-    });
-  }, [allTools, query]);
+  const filtered = useMemo(
+    () => filterTools(allTools, query),
+    [allTools, query],
+  );
 
   const ordered = useMemo(
     () => sortToolsForMenu(filtered, favSet),

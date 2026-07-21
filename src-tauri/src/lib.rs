@@ -59,7 +59,7 @@ pub fn run() {
                 WebviewUrl::App("index.html?window=spotlight".into()),
             )
             .title("DevKit Spotlight")
-            .inner_size(640.0, 72.0)
+            .inner_size(640.0, 420.0)
             .decorations(false)
             .always_on_top(true)
             .skip_taskbar(true)

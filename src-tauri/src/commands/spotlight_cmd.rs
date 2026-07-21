@@ -17,7 +17,7 @@ use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutEvent, S
 
 /// Spotlight "bar" (search) dimensions in logical pixels.
 const BAR_WIDTH: f64 = 640.0;
-const BAR_HEIGHT: f64 = 72.0;
+const BAR_HEIGHT: f64 = 420.0;
 /// Spotlight "tool" view dimensions in logical pixels — small but large enough
 /// for the shared `ToolPageShell`.
 const TOOL_WIDTH: f64 = 720.0;

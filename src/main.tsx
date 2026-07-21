@@ -1,6 +1,7 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
+import { SpotlightApp } from "./spotlight/spotlight-app";
 import "./index.css";
 
 import { applyTheme, watchSystemTheme } from "@/lib/theme";
@@ -18,8 +19,15 @@ useAppStore.subscribe((s, prev) => {
 // …and when the OS preference changes (only matters while in "system" mode).
 watchSystemTheme(() => applyTheme(useAppStore.getState().theme));
 
+const isSpotlightWindow =
+  new URLSearchParams(window.location.search).get("window") === "spotlight";
+
+if (isSpotlightWindow) {
+  document.documentElement.classList.add("spotlight-window");
+}
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    {isSpotlightWindow ? <SpotlightApp /> : <App />}
   </React.StrictMode>,
 );
