@@ -1,5 +1,5 @@
 import { useMemo, useState } from "react";
-import { ArrowUpCircle } from "lucide-react";
+import { ArrowUpCircle, Settings } from "lucide-react";
 
 import type { Tool } from "@/lib/types";
 import { getAllTools } from "@/lib/registry";
@@ -14,6 +14,7 @@ import { ThemeToggle } from "@/components/theme-toggle";
 import { MenuPanelItem } from "@/components/menu-panel-item";
 import { Logo } from "@/components/logo";
 import { UpdateModal } from "@/components/update-modal";
+import { HotkeySettingsModal } from "@/components/hotkey-settings-modal";
 import { cn, isMac } from "@/lib/utils";
 
 /**
@@ -24,6 +25,7 @@ import { cn, isMac } from "@/lib/utils";
 export function MenuPanel() {
   const [query, setQuery] = useState("");
   const [updateModalOpen, setUpdateModalOpen] = useState(false);
+  const [hotkeyModalOpen, setHotkeyModalOpen] = useState(false);
   const allTools = getAllTools();
   const favorites = useAppStore((s) => s.favorites);
   const lastActiveToolId = useAppStore((s) => s.lastActiveToolId);
@@ -60,12 +62,21 @@ export function MenuPanel() {
                 <span className="text-lg font-bold font-display tracking-tight text-foreground/90">
                   DevKit
                 </span>
+                <Button
+                  variant="ghost"
+                  size="icon"
+                  aria-label="Spotlight hotkey settings"
+                  className="ml-auto h-7 w-7 text-foreground/90"
+                  onClick={() => setHotkeyModalOpen(true)}
+                >
+                  <Settings className="h-4 w-4" />
+                </Button>
                 {updateState.hasUpdate && (
                   <Button
                     variant="ghost"
                     size="icon"
                     aria-label="View available update"
-                    className="ml-auto h-7 w-7 text-foreground/90"
+                    className="h-7 w-7 text-foreground/90"
                     onClick={() => setUpdateModalOpen(true)}
                   >
                     <ArrowUpCircle className="h-4 w-4" />
@@ -114,6 +125,10 @@ export function MenuPanel() {
         open={updateModalOpen}
         onOpenChange={setUpdateModalOpen}
         state={updateState}
+      />
+      <HotkeySettingsModal
+        open={hotkeyModalOpen}
+        onOpenChange={setHotkeyModalOpen}
       />
     </aside>
   );
