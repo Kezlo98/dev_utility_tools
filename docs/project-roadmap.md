@@ -56,8 +56,11 @@ The bootstrap release successfully implemented 18 tools across 7 core phases:
 ## 2. Current State
 
 - **Completed Tools:** 18 utilities are fully built, tested, and operational.
+- **Shell Features:** Global spotlight quick-access launcher (OS hotkey → floating search bar → small tool window), tray icon, and hide-on-close background lifecycle are shipped — see [roadmap-near-term.md](./roadmap-near-term.md) under "Done".
 - **CI Pipelines:** Automated static checks (`typecheck-lint`) run on every PR. Build pipelines package installer binaries on tag pushes.
 - **Signing Status:** Unsigned. Installers compile cleanly but trigger Gatekeeper (macOS) and SmartScreen (Windows) warnings.
+
+> Near-term feature queue (next tools after the spotlight launcher) lives in [roadmap-near-term.md](./roadmap-near-term.md). This document tracks the longer-horizon release phases below.
 
 ---
 

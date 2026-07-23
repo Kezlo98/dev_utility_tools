@@ -1,7 +1,7 @@
 {
   "$schema": "../gen/schemas/desktop-schema.json",
   "identifier": "spotlight",
-  "description": "Capability for the spotlight quick-access window. Window-management and hotkey permissions are added in later phases as those calls are introduced.",
+  "description": "Capability for the spotlight quick-access window. core:default is intentionally sufficient: all window show/hide/resize and hotkey rebind operations are performed through custom Rust commands in spotlight_cmd.rs, so this WebView only invokes commands and listens for events.",
   "windows": ["spotlight"],
   "permissions": ["core:default"]
 }

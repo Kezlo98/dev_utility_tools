@@ -13,7 +13,8 @@ The repository is divided into the React frontend ([src/](file:///Users/kezlo/Wo
 │   ├── components/             # Layout frame, command palette, and UI components
 │   │   └── ui/                 # Shadcn/ui core components (buttons, dialogs, inputs)
 │   ├── hooks/                  # Custom hooks (e.g., keyboard shortcuts)
-│   ├── lib/                    # General utilities (Transforms, Theme, Random, Registry)
+│   ├── lib/                    # General utilities (Transforms, Theme, Random, Registry, tool-search)
+│   ├── spotlight/              # Spotlight quick-access window (SpotlightApp + search)
 │   ├── store/                  # Zustand stores and localStorage persistence adapter
 │   └── tools/                  # Tool components and tests grouped by domain category
 │       ├── cron/               # Cron expression explorer & Crontab validator
@@ -25,7 +26,7 @@ The repository is divided into the React frontend ([src/](file:///Users/kezlo/Wo
 ├── src-tauri/                  # Tauri Rust backend
 │   ├── capabilities/           # Tauri security allowlists and capabilities
 │   └── src/                    # Rust source code
-│       ├── commands/           # Rust IPC command implementations (bcrypt, JWT)
+│       ├── commands/           # Rust IPC command implementations (bcrypt, JWT, base64-file, spotlight)
 │       ├── lib.rs              # Tauri builder bootstrap and command registration
 │       └── main.rs             # Application entrypoint
 └── tests/                      # Integration and smoke tests
@@ -57,6 +58,7 @@ All tools in DevKit are registered in [registry.ts](file:///Users/kezlo/Workspac
   }
   ```
 - **Display Order:** Tools are sorted alphabetically (A-Z) within their groups. Pinned favorites are separated dynamically and sorted alphabetically.
+- **Shared Fuzzy Search:** The command palette (`Cmd/Ctrl+K`) and the spotlight quick-access window share one fuzzy-match helper in [tool-search.ts](file:///Users/kezlo/Workspaces/kezlo/dev_utility_tools/src/lib/tool-search.ts), so both surfaces filter the registry identically.
 
 ## 4. State Persistence
 
@@ -67,6 +69,7 @@ UI state is persisted across application restarts via Zustand middleware backed 
   - `theme`: Selected theme preference (`light` | `dark` | `system`).
   - `lastActiveToolId`: Restores the user's previously open tool workspace.
   - `paletteRecents`: The last 8 tools navigated via the command palette.
+  - `globalHotkey`: The user-configured global spotlight hotkey, or `null` to use the platform default.
 - **Hydration:** State is loaded synchronously from `localStorage` under the `devkit:` prefix before the React app mounts, preventing theme flickering on startup.
 - **Storage Adapter:** Configured in [persistence.ts](file:///Users/kezlo/Workspaces/kezlo/dev_utility_tools/src/store/persistence.ts), catching quota errors and gracefully failing back to memory if storage is disabled.
 
