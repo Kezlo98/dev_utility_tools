@@ -1,9 +1,10 @@
-import { describe, it, expect } from "vitest";
+import { describe, it, expect, vi } from "vitest";
 
 import {
   PLATFORM_DEFAULT_HOTKEY,
   isReservedOnWindows,
   keyboardEventToCombo,
+  restorePersistedGlobalHotkey,
 } from "./hotkey";
 
 // jsdom's user agent is non-Mac, so these tests exercise the Windows/Linux
@@ -26,7 +27,9 @@ function key(parts: {
 
 describe("keyboardEventToCombo", () => {
   it("returns null for a bare modifier press", () => {
-    expect(keyboardEventToCombo(key({ key: "Control", ctrl: true }))).toBeNull();
+    expect(
+      keyboardEventToCombo(key({ key: "Control", ctrl: true })),
+    ).toBeNull();
     expect(keyboardEventToCombo(key({ key: "Alt", alt: true }))).toBeNull();
     expect(keyboardEventToCombo(key({ key: "Shift", shift: true }))).toBeNull();
   });
@@ -50,9 +53,9 @@ describe("keyboardEventToCombo", () => {
   });
 
   it("uppercases single-character keys and maps Space/Arrows", () => {
-    expect(keyboardEventToCombo(key({ key: "a", ctrl: true, shift: true }))).toBe(
-      "Ctrl+Shift+A",
-    );
+    expect(
+      keyboardEventToCombo(key({ key: "a", ctrl: true, shift: true })),
+    ).toBe("Ctrl+Shift+A");
     expect(keyboardEventToCombo(key({ key: "ArrowUp", ctrl: true }))).toBe(
       "Ctrl+Up",
     );
@@ -75,5 +78,34 @@ describe("platform default + reserved combo", () => {
   it("blocks bare Alt+Space on Windows but allows it with another modifier", () => {
     expect(isReservedOnWindows("Alt+Space")).toBe(true);
     expect(isReservedOnWindows("Ctrl+Alt+Space")).toBe(false);
+  });
+});
+
+describe("restorePersistedGlobalHotkey", () => {
+  it("leaves the platform default registered for a null preference", async () => {
+    const register = vi.fn<(combo: string) => Promise<void>>();
+
+    await expect(restorePersistedGlobalHotkey(null, register)).resolves.toBe(
+      true,
+    );
+    expect(register).not.toHaveBeenCalled();
+  });
+
+  it("registers a persisted custom shortcut", async () => {
+    const register = vi.fn().mockResolvedValue(undefined);
+
+    await expect(
+      restorePersistedGlobalHotkey("Ctrl+Shift+Space", register),
+    ).resolves.toBe(true);
+    expect(register).toHaveBeenCalledOnce();
+    expect(register).toHaveBeenCalledWith("Ctrl+Shift+Space");
+  });
+
+  it("reports a rejected shortcut without throwing during startup", async () => {
+    const register = vi.fn().mockRejectedValue(new Error("already registered"));
+
+    await expect(
+      restorePersistedGlobalHotkey("Ctrl+Shift+Space", register),
+    ).resolves.toBe(false);
   });
 });

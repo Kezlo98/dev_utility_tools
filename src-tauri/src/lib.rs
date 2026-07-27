@@ -6,7 +6,7 @@ use tauri::{
     Manager, WebviewUrl, WebviewWindowBuilder, WindowEvent,
 };
 
-use commands::spotlight_cmd::{on_hotkey_pressed, HotkeyState};
+use commands::spotlight_cmd::{on_hotkey_pressed, show_spotlight, HotkeyState};
 use tauri_plugin_global_shortcut::{Builder as GlobalShortcutBuilder, GlobalShortcutExt};
 
 /// Default spotlight hotkey when no user preference has been pushed from the
@@ -95,14 +95,21 @@ pub fn run() {
                     .replace(DEFAULT_HOTKEY.to_string());
             }
 
-            // Tray menu — "Show DevKit" restores the main window, "Quit" is the
-            // only real exit path now that main-window close hides instead.
+            // Tray menu — restore either window, or fully exit the background
+            // process. "Quit" is the only real exit path now that main-window
+            // close hides instead.
             let show_item = MenuItem::with_id(app, "show", "Show DevKit", true, None::<&str>)?;
+            let spotlight_item =
+                MenuItem::with_id(app, "spotlight", "Show Spotlight", true, None::<&str>)?;
             let quit_item = MenuItem::with_id(app, "quit", "Quit DevKit", true, None::<&str>)?;
-            let menu = Menu::with_items(app, &[&show_item, &quit_item])?;
+            let menu = Menu::with_items(app, &[&show_item, &spotlight_item, &quit_item])?;
 
             TrayIconBuilder::with_id("main-tray")
-                .icon(app.default_window_icon().cloned().ok_or("no default window icon")?)
+                .icon(
+                    app.default_window_icon()
+                        .cloned()
+                        .ok_or("no default window icon")?,
+                )
                 .menu(&menu)
                 .show_menu_on_left_click(false)
                 .on_menu_event(|app, event| match event.id().as_ref() {
@@ -111,6 +118,9 @@ pub fn run() {
                             let _ = window.show();
                             let _ = window.set_focus();
                         }
+                    }
+                    "spotlight" => {
+                        let _ = show_spotlight(app);
                     }
                     "quit" => {
                         app.exit(0);

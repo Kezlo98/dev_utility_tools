@@ -119,7 +119,7 @@ Security is paramount as developers process sensitive files, tokens, and payload
 
 - **Second Window:** A `spotlight` window is created hidden at startup (undecorated, always-on-top, skip-taskbar, transparent, resizable). It is shown/hidden/resized only via Rust commands in response to the global hotkey, and mounts `SpotlightApp` (instead of the main `App`) when the webview URL carries the `?window=spotlight` query param.
 - **Global Hotkey:** Registered via `tauri-plugin-global-shortcut`. The default is per-platform — `Option+Space` on macOS, `Ctrl+Alt+Space` on Windows/Linux (plain `Alt+Space` is reserved by Windows). A failed rebind re-registers the previous combo so a working shortcut is never silently dropped; the error surfaces inline in the in-app hotkey settings.
-- **Background Running & Tray:** Closing the main window is intercepted (`prevent_close` + `hide`) so the process — and the global hotkey — keep running. A system-tray icon provides "Show DevKit" (restore the main window) and "Quit DevKit" (the only real exit path).
+- **Background Running & Tray:** Closing the main window is intercepted (`prevent_close` + `hide`) so the process — and the global hotkey — keep running. A system-tray icon provides "Show DevKit" (restore the main window), "Show Spotlight" (open the quick-access window), and "Quit DevKit" (the only real exit path).
 - **OS Permissions (macOS):** First global-shortcut use may trigger a one-time macOS Accessibility / Input Monitoring prompt; this is an OS permission gate, not an app bug.
 
 ### 4.3 State Isolation

@@ -5,7 +5,9 @@ import { isMac } from "@/lib/utils";
  * (`Option+Space` on macOS, `Ctrl+Alt+Space` elsewhere) so a `null` store
  * preference renders the same combo Rust registers at launch.
  */
-export const PLATFORM_DEFAULT_HOTKEY = isMac ? "Option+Space" : "Ctrl+Alt+Space";
+export const PLATFORM_DEFAULT_HOTKEY = isMac
+  ? "Option+Space"
+  : "Ctrl+Alt+Space";
 
 /**
  * Plain `Alt+Space` is reserved by the Windows window-menu system, so it is
@@ -18,6 +20,25 @@ export const RESERVED_WINDOWS_COMBO = "Alt+Space";
 /** True only for the bare `Alt+Space` combo on Windows (no other modifier). */
 export function isReservedOnWindows(combo: string): boolean {
   return !isMac && combo === RESERVED_WINDOWS_COMBO;
+}
+
+/**
+ * Re-register a persisted custom shortcut during main-window startup.
+ * Returns false when registration fails so the caller can restore its persisted
+ * state to the platform default without blocking application rendering.
+ */
+export async function restorePersistedGlobalHotkey(
+  combo: string | null,
+  register: (combo: string) => Promise<void>,
+): Promise<boolean> {
+  if (combo === null) return true;
+
+  try {
+    await register(combo);
+    return true;
+  } catch {
+    return false;
+  }
 }
 
 interface ComboKey {

@@ -4,6 +4,8 @@ import App from "./App";
 import { SpotlightApp } from "./spotlight/spotlight-app";
 import "./index.css";
 
+import { restorePersistedGlobalHotkey } from "@/lib/hotkey";
+import { setGlobalHotkey as setGlobalHotkeyCmd } from "@/lib/invoke";
 import { applyTheme, watchSystemTheme } from "@/lib/theme";
 import { useAppStore } from "@/store/app-store";
 
@@ -24,6 +26,13 @@ const isSpotlightWindow =
 
 if (isSpotlightWindow) {
   document.documentElement.classList.add("spotlight-window");
+} else {
+  const { globalHotkey, setGlobalHotkey } = useAppStore.getState();
+  void restorePersistedGlobalHotkey(globalHotkey, setGlobalHotkeyCmd).then(
+    (restored) => {
+      if (!restored) setGlobalHotkey(null);
+    },
+  );
 }
 
 ReactDOM.createRoot(document.getElementById("root")!).render(

@@ -92,14 +92,18 @@ fn resize_and_center<R: Runtime>(
 
 /// Show the spotlight bar: resize to bar dimensions, center on the primary
 /// screen, reveal, and focus. Emits `spotlight:shown` so the frontend can sync.
-#[tauri::command]
-pub fn spotlight_show<R: Runtime>(app: AppHandle<R>) -> Result<(), String> {
-    let window = spotlight_window(&app)?;
+pub fn show_spotlight<R: Runtime>(app: &AppHandle<R>) -> Result<(), String> {
+    let window = spotlight_window(app)?;
     resize_and_center(&window, BAR_WIDTH, BAR_HEIGHT)?;
     to_str(window.show())?;
     let _ = window.set_focus();
     to_str(window.emit("spotlight:shown", ()))?;
     Ok(())
+}
+
+#[tauri::command]
+pub fn spotlight_show<R: Runtime>(app: AppHandle<R>) -> Result<(), String> {
+    show_spotlight(&app)
 }
 
 /// Hide the spotlight window.
@@ -179,7 +183,9 @@ pub fn set_global_hotkey<R: Runtime>(
             // Restore the previous combo. If the restore itself fails, clear
             // state rather than pretend a hotkey is still registered.
             let restored = match current.as_ref() {
-                Some(old) => global.on_shortcut(old.as_str(), on_hotkey_pressed::<R>).is_ok(),
+                Some(old) => global
+                    .on_shortcut(old.as_str(), on_hotkey_pressed::<R>)
+                    .is_ok(),
                 None => true,
             };
             if !restored {
