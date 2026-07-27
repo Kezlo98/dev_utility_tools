@@ -61,6 +61,11 @@ pub fn run() {
             .title("DevKit Spotlight")
             .inner_size(640.0, 420.0)
             .decorations(false)
+            // The OS draws its own drop shadow around undecorated windows by
+            // default (visible as a soft rounded outline outside the glass
+            // card). The UI already renders its own shadow via `glass-panel`,
+            // so the native one is redundant and reads as a stray border.
+            .shadow(false)
             .always_on_top(true)
             .skip_taskbar(true)
             .transparent(true)

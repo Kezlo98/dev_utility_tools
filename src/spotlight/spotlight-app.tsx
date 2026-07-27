@@ -95,6 +95,16 @@ export function SpotlightApp() {
     }
   }
 
+  async function backToSearch() {
+    // Same shrink-back-to-bar path as re-pressing the hotkey from tool mode.
+    resetToSearch();
+    try {
+      await invoke("spotlight_reset_to_search");
+    } catch {
+      // Window is already shrunk to bar size locally; nothing to roll back.
+    }
+  }
+
   useEffect(() => {
     function handleKeyDown(event: KeyboardEvent) {
       if (event.key === "Escape") void hide();
@@ -124,7 +134,7 @@ export function SpotlightApp() {
         data-spotlight-backdrop="true"
         className="h-screen w-screen bg-transparent p-3 text-foreground"
       >
-        <ToolPageShell tool={activeTool}>
+        <ToolPageShell tool={activeTool} compact onBack={() => void backToSearch()}>
           <ToolComponent />
         </ToolPageShell>
       </div>

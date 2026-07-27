@@ -72,13 +72,17 @@ export function SpotlightSearch({ tools, recentIds, onSelect, resetKey }: Props)
 
   return (
     <section className="flex h-full flex-col overflow-hidden rounded-2xl border border-white/40 bg-background/85 shadow-2xl backdrop-blur-2xl dark:border-white/10 dark:bg-card/90">
-      <div className="flex h-16 shrink-0 items-center gap-3 border-b px-5">
+      {/* data-tauri-drag-region lets this undecorated window be moved by
+          dragging the search bar; the input stops propagation so clicking
+          into it focuses/positions the caret instead of starting a drag. */}
+      <div data-tauri-drag-region className="flex h-16 shrink-0 items-center gap-3 border-b px-5">
         <Search className="h-5 w-5 shrink-0 text-muted-foreground" />
         <input
           ref={inputRef}
           value={query}
           onChange={(event) => setQuery(event.target.value)}
           onKeyDown={handleKeyDown}
+          onMouseDown={(e) => e.stopPropagation()}
           role="combobox"
           aria-expanded="true"
           aria-controls="spotlight-results"

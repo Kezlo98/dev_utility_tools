@@ -11,7 +11,9 @@
 
 use std::sync::Mutex;
 
-use tauri::{AppHandle, Emitter, LogicalSize, Manager, Runtime, State, WebviewWindow};
+use tauri::{
+    AppHandle, Emitter, LogicalPosition, LogicalSize, Manager, Runtime, State, WebviewWindow,
+};
 
 use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutEvent, ShortcutState};
 
@@ -19,9 +21,11 @@ use tauri_plugin_global_shortcut::{GlobalShortcutExt, Shortcut, ShortcutEvent, S
 const BAR_WIDTH: f64 = 640.0;
 const BAR_HEIGHT: f64 = 420.0;
 /// Spotlight "tool" view dimensions in logical pixels — small but large enough
-/// for the shared `ToolPageShell`.
-const TOOL_WIDTH: f64 = 720.0;
-const TOOL_HEIGHT: f64 = 560.0;
+/// for the shared `ToolPageShell`. Width must clear Tailwind's `md` breakpoint
+/// (768px) so `ToolIoPanels`' input/output panes render side-by-side instead
+/// of stacking (stacked panes overflow each other at this window height).
+const TOOL_WIDTH: f64 = 860.0;
+const TOOL_HEIGHT: f64 = 600.0;
 
 /// Per-app record of the currently-registered hotkey combo, so a failed rebind
 /// can restore the previous working registration instead of leaving nothing
@@ -58,13 +62,40 @@ fn spotlight_window<R: Runtime>(app: &AppHandle<R>) -> Result<WebviewWindow<R>, 
         .ok_or_else(|| "spotlight window is not registered".to_string())
 }
 
+/// Resize `window` to `width` x `height` (logical px) and reposition it
+/// centered on the primary monitor.
+///
+/// Deliberately does NOT use Tauri's `Window::center()`: that method centers
+/// against the window's own current outer size, which on macOS can still
+/// reflect the pre-resize geometry for a moment after `set_size()` — the
+/// window lands off-center (or in a corner) depending on timing. Computing
+/// the target position from the monitor's geometry instead of the window's
+/// self-reported size sidesteps that race entirely.
+fn resize_and_center<R: Runtime>(
+    window: &WebviewWindow<R>,
+    width: f64,
+    height: f64,
+) -> Result<(), String> {
+    to_str(window.set_size(LogicalSize::new(width, height)))?;
+
+    let monitor = to_str(window.primary_monitor())?
+        .ok_or_else(|| "no primary monitor available to center spotlight window".to_string())?;
+    let scale = monitor.scale_factor();
+    let monitor_size = monitor.size();
+    let monitor_pos = monitor.position();
+
+    let x = monitor_pos.x as f64 / scale + (monitor_size.width as f64 / scale - width) / 2.0;
+    let y = monitor_pos.y as f64 / scale + (monitor_size.height as f64 / scale - height) / 2.0;
+    to_str(window.set_position(LogicalPosition::new(x, y)))?;
+    Ok(())
+}
+
 /// Show the spotlight bar: resize to bar dimensions, center on the primary
 /// screen, reveal, and focus. Emits `spotlight:shown` so the frontend can sync.
 #[tauri::command]
 pub fn spotlight_show<R: Runtime>(app: AppHandle<R>) -> Result<(), String> {
     let window = spotlight_window(&app)?;
-    to_str(window.set_size(LogicalSize::new(BAR_WIDTH, BAR_HEIGHT)))?;
-    to_str(window.center())?;
+    resize_and_center(&window, BAR_WIDTH, BAR_HEIGHT)?;
     to_str(window.show())?;
     let _ = window.set_focus();
     to_str(window.emit("spotlight:shown", ()))?;
@@ -85,8 +116,7 @@ pub fn spotlight_hide<R: Runtime>(app: AppHandle<R>) -> Result<(), String> {
 #[tauri::command]
 pub fn spotlight_reset_to_search<R: Runtime>(app: AppHandle<R>) -> Result<(), String> {
     let window = spotlight_window(&app)?;
-    to_str(window.set_size(LogicalSize::new(BAR_WIDTH, BAR_HEIGHT)))?;
-    to_str(window.center())?;
+    resize_and_center(&window, BAR_WIDTH, BAR_HEIGHT)?;
     let _ = window.set_focus();
     to_str(window.emit("spotlight:reset-to-search", ()))?;
     Ok(())
@@ -97,8 +127,7 @@ pub fn spotlight_reset_to_search<R: Runtime>(app: AppHandle<R>) -> Result<(), St
 #[tauri::command]
 pub fn spotlight_show_tool<R: Runtime>(app: AppHandle<R>) -> Result<(), String> {
     let window = spotlight_window(&app)?;
-    to_str(window.set_size(LogicalSize::new(TOOL_WIDTH, TOOL_HEIGHT)))?;
-    to_str(window.center())?;
+    resize_and_center(&window, TOOL_WIDTH, TOOL_HEIGHT)?;
     let _ = window.set_focus();
     to_str(window.emit("spotlight:show-tool", ()))?;
     Ok(())
