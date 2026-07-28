@@ -5,10 +5,10 @@ import type { ThemeMode } from "@/lib/types";
 import { stateStorage } from "@/store/persistence";
 
 /**
- * App-wide UI state. The five persisted fields (favorites, theme,
- * lastActiveToolId, paletteRecents, ignoredVersion) survive restarts via the
- * zustand `persist` middleware backed by localStorage under the `devkit:`
- * namespace.
+ * App-wide UI state. The six persisted fields (favorites, theme,
+ * lastActiveToolId, paletteRecents, ignoredVersion, globalHotkey) survive
+ * restarts via the zustand `persist` middleware backed by localStorage under
+ * the `devkit:` namespace.
  *
  * Hydration is synchronous (localStorage is sync), so the store is ready
  * before React mounts — no flash, no hydration race. Writes only happen on
@@ -23,6 +23,8 @@ interface AppState {
   lastActiveToolId: string | null;
   paletteRecents: string[];
   ignoredVersion: string | null;
+  /** Global spotlight hotkey, or null to use the platform default. */
+  globalHotkey: string | null;
 
   toggleFavorite: (id: string) => void;
   isFavorite: (id: string) => boolean;
@@ -30,6 +32,7 @@ interface AppState {
   setActiveTool: (id: string) => void;
   recordRecent: (id: string) => void;
   setIgnoredVersion: (v: string) => void;
+  setGlobalHotkey: (v: string | null) => void;
 }
 
 export const useAppStore = create<AppState>()(
@@ -40,6 +43,7 @@ export const useAppStore = create<AppState>()(
       lastActiveToolId: null,
       paletteRecents: [],
       ignoredVersion: null,
+      globalHotkey: null,
 
       toggleFavorite: (id) =>
         set((s) => ({
@@ -63,6 +67,8 @@ export const useAppStore = create<AppState>()(
         })),
 
       setIgnoredVersion: (v) => set({ ignoredVersion: v }),
+
+      setGlobalHotkey: (v) => set({ globalHotkey: v }),
     }),
     {
       name: "app-state",
@@ -73,6 +79,7 @@ export const useAppStore = create<AppState>()(
         lastActiveToolId: s.lastActiveToolId,
         paletteRecents: s.paletteRecents,
         ignoredVersion: s.ignoredVersion,
+        globalHotkey: s.globalHotkey,
       }),
     },
   ),

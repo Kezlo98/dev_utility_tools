@@ -69,6 +69,17 @@ export function base64EncodeStringToFile(
   return invoke<void>("base64_encode_string_to_file", { data, outputPath });
 }
 
+/**
+ * Re-register the global spotlight hotkey to `combo` (a Tauri accelerator
+ * string, e.g. `"Option+Space"`, `"Ctrl+Alt+Space"`). On failure the previously
+ * registered combo keeps working Rust-side and this rejects with an error
+ * string for inline rendering — the caller must not persist a new value until
+ * this resolves.
+ */
+export function setGlobalHotkey(combo: string): Promise<void> {
+  return invoke<void>("set_global_hotkey", { combo });
+}
+
 /** Read `inputPath`, encode or decode per `direction`, and write `outputPath`. No size cap. */
 export function base64TransformFile(
   inputPath: string,

@@ -1,8 +1,11 @@
 import React from "react";
 import ReactDOM from "react-dom/client";
 import App from "./App";
+import { SpotlightApp } from "./spotlight/spotlight-app";
 import "./index.css";
 
+import { restorePersistedGlobalHotkey } from "@/lib/hotkey";
+import { setGlobalHotkey as setGlobalHotkeyCmd } from "@/lib/invoke";
 import { applyTheme, watchSystemTheme } from "@/lib/theme";
 import { useAppStore } from "@/store/app-store";
 
@@ -18,8 +21,22 @@ useAppStore.subscribe((s, prev) => {
 // …and when the OS preference changes (only matters while in "system" mode).
 watchSystemTheme(() => applyTheme(useAppStore.getState().theme));
 
+const isSpotlightWindow =
+  new URLSearchParams(window.location.search).get("window") === "spotlight";
+
+if (isSpotlightWindow) {
+  document.documentElement.classList.add("spotlight-window");
+} else {
+  const { globalHotkey, setGlobalHotkey } = useAppStore.getState();
+  void restorePersistedGlobalHotkey(globalHotkey, setGlobalHotkeyCmd).then(
+    (restored) => {
+      if (!restored) setGlobalHotkey(null);
+    },
+  );
+}
+
 ReactDOM.createRoot(document.getElementById("root")!).render(
   <React.StrictMode>
-    <App />
+    {isSpotlightWindow ? <SpotlightApp /> : <App />}
   </React.StrictMode>,
 );

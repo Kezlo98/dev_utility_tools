@@ -5,3 +5,4 @@
 pub mod base64_file_cmd;
 pub mod bcrypt_cmd;
 pub mod jwt_cmd;
+pub mod spotlight_cmd;
