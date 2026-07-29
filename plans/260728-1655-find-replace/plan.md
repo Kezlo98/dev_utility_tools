@@ -1,7 +1,7 @@
 ---
 title: "Find & Replace in ToolIoPanels"
 description: "Add bounded literal and regex find/replace to the shared ToolIoPanels input editor, with capture-token replacement, cyclic navigation, and focused regression tests."
-status: in-progress
+status: completed
 priority: P2
 effort: "6h"
 branch: "master"
@@ -60,9 +60,9 @@ Add Find & Replace (replace one + replace all, case-sensitive toggle, regex togg
 
 | # | Phase | Status | Depends on |
 |---|-------|--------|------------|
-| 1 | [Find/Replace Engine](./phase-01-find-replace-engine.md) | Pending | — |
-| 2 | [ToolIoPanels Integration](./phase-02-tooliopanels-integration.md) | Pending | Phase 1 |
-| 3 | [Verification and Regression Gate](./phase-03-verification-and-regression-gate.md) | Pending | Phase 2 |
+| 1 | [Find/Replace Engine](./phase-01-find-replace-engine.md) | Completed | — |
+| 2 | [ToolIoPanels Integration](./phase-02-tooliopanels-integration.md) | Completed | Phase 1 |
+| 3 | [Verification and Regression Gate](./phase-03-verification-and-regression-gate.md) | Completed | Phase 2 |
 
 ## Risk / Rollback
 - Risk: synchronous JavaScript regex can freeze on catastrophic backtracking. Mitigation: regex is opt-in and limited to a 500-character pattern and 200 KB per scanned pane, with a 10,000-match ceiling. Literal search remains uncapped; oversized Output skips passive highlighting without blocking Input actions.

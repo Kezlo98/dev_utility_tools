@@ -1,7 +1,7 @@
 ---
 phase: 3
 title: "Verification and Regression Gate"
-status: in-progress
+status: completed
 priority: P1
 effort: "1h"
 dependencies: [2]
@@ -62,7 +62,7 @@ Verification proceeds from narrow to broad: helper tests, component tests, full 
 
 - [x] Focused helper and component suites pass.
 - [x] Typecheck, lint, and full Vitest pass without ignored failures.
-- [ ] Every acceptance criterion has a manual pass result.
+- [x] Every acceptance criterion has a manual pass result.
 - [x] All six tools retain derived Output behavior after replacement.
 - [x] GitNexus reports only expected symbols/flows and all d=1 dependents are accounted for.
 - [x] No evergreen documentation claims require an update; if discovery proves otherwise, update the smallest owning document.
