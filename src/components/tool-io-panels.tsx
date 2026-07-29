@@ -288,7 +288,8 @@ export function ToolIoPanels({
       const replacementLength = result.text.length - (input.length - match.match.length);
       replacePendingRef.current = {
         expectedInput: result.text,
-        nextOffset: match.index + replacementLength,
+        nextOffset:
+          match.index + replacementLength + (match.match.length === 0 ? 1 : 0),
       };
       setReplacePending(true);
       onInputChange(result.text);

@@ -176,6 +176,23 @@ describe("ToolIoPanels find and replace", () => {
     expect(screen.getByText("2/2")).toBeInTheDocument();
   });
 
+  it("advances across zero-width matches after replacement", () => {
+    render(<Harness initialInput="aa" output="" />);
+    const find = openSearch();
+    const replace = expandReplace();
+
+    fireEvent.click(screen.getByRole("button", { name: "Use regular expression" }));
+    fireEvent.change(find, { target: { value: "(?=a)" } });
+    fireEvent.change(replace, { target: { value: "x" } });
+
+    fireEvent.click(screen.getByRole("button", { name: "Replace" }));
+    expect(screen.getByDisplayValue("xaa")).toBeInTheDocument();
+    expect(screen.getByText("2/2")).toBeInTheDocument();
+
+    fireEvent.click(screen.getByRole("button", { name: "Replace" }));
+    expect(screen.getByDisplayValue("xaxa")).toBeInTheDocument();
+  });
+
   it("does not render zero-width matches as marks", () => {
     const { container } = render(<Harness initialInput="abc" output="abc" />);
     const find = openSearch();
